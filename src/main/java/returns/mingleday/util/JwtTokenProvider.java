@@ -9,13 +9,14 @@ import org.springframework.stereotype.Component;
 import returns.mingleday.domain.users.User;
 
 import java.security.Key;
+import java.util.Date;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class JwtTokenProvider {
 
-    @Value("${jwt.jwt-key}")
+    @Value("${jwt.secret}")
     private String jwtSecretKey;
 
     @Value("${jwt.access-token-expiration}")
@@ -30,7 +31,7 @@ public class JwtTokenProvider {
         return true;
     }
 
-    public Claims parseClaims(String token) {
+    private Claims parseClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSigningKey())
                 .build()
@@ -38,7 +39,21 @@ public class JwtTokenProvider {
                 .getBody();
     }
 
-    public User getUser(String token) {
-        return new User();
+    public String getUserId(String token) {
+        Claims claims = parseClaims(token);
+        return claims.getSubject();
+    }
+
+    private String createToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + tokenExpiration);
+
+        return Jwts.builder()
+                .setSubject(String.valueOf(user.getUserId()))
+                .claim("role", user.getRole())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(getSigningKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 }

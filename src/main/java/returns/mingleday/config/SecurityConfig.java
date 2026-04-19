@@ -32,8 +32,10 @@ public class SecurityConfig {
                         session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(SecurityConstant.PERMIT_ENDPOINTS.toArray(new String[0])).permitAll()
-                        .anyRequest().authenticated()
+                        .requestMatchers(SecurityConstant.PERMIT_ENDPOINTS.toArray(new String[0]))
+                        .permitAll()
+                        .anyRequest()
+                        .authenticated()
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 

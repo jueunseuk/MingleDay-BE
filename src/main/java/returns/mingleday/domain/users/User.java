@@ -5,6 +5,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
+import returns.mingleday.global.domain.BaseTime;
 
 import java.time.LocalDateTime;
 
@@ -14,7 +16,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "user")
-public class User {
+public class User extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", nullable = false)
@@ -29,18 +31,23 @@ public class User {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "password")
+    @Column(name = "password", nullable = false)
     private String password;
 
-    @Column(name = "password_updated_at")
+    @Column(name = "password_updated_at", nullable = false)
     private LocalDateTime passwordUpdatedAt;
 
-    @Column(name = "last_login_at")
+    @Column(name = "last_login_at", nullable = false)
     private LocalDateTime lastLoginAt;
 
     @Column(name = "profile_url")
     private String profileUrl;
 
-    @Column(name = "deleted_at")
-    private LocalDateTime deletedAt;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false)
+    private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false)
+    private Status status;
 }

@@ -16,6 +16,6 @@ public class SecurityConstant {
     );
 
     public static final List<String> PERMIT_ENDPOINTS = List.of(
-            ""
+            "/auth/*"
     );
 }

@@ -8,10 +8,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import returns.mingleday.domain.users.User;
-import returns.mingleday.global.constant.SecurityConstant;
 
 import java.io.IOException;
 
@@ -21,43 +22,41 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
+    private final UserDetailsService userDetailsService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String header = request.getHeader("Authorization");
-
-        String token = "";
-        if (header != null && header.startsWith("Bearer ")) {
-            token = header.substring(7);
-        } else {
-            log.debug("Authorization header is missing");
+        if (header == null || !header.startsWith("Bearer ")) {
+            filterChain.doFilter(request, response);
+            return;
         }
 
-        if (token != null && jwtTokenProvider.isValidToken(token)) {
-            User currentUser = jwtTokenProvider.getUser(token);
-
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            currentUser.getUserId(), null, null
-                    );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-        }
+        String token = header.substring(7);
 
         try {
-            filterChain.doFilter(request, response);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (ServletException e) {
-            throw new RuntimeException(e);
+            if (!token.isEmpty() && jwtTokenProvider.isValidToken(token)) {
+                String userId = jwtTokenProvider.getUserId(token);
+
+                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                null,
+                                userDetails.getAuthorities()
+                        );
+
+                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("Successfully authenticated user : {}", userDetails.getUsername());
+            }
+        } catch (Exception e) {
+            log.error("Security Context에 인증 정보를 설정할 수 없습니다: {}", e.getMessage());
         }
-    }
 
-    @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
-        String path = request.getRequestURI();
-
-        return SecurityConstant.PERMIT_ENDPOINTS.contains(path);
+        filterChain.doFilter(request, response);
     }
 }
