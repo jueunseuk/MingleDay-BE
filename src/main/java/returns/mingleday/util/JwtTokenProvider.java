@@ -27,8 +27,13 @@ public class JwtTokenProvider {
     }
 
     public boolean isValidToken(String token) {
-        Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
-        return true;
+        try {
+            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
+            return true;
+        } catch (Exception e) {
+            log.error("JWT validation failure: {}", e.getMessage());
+            return false;
+        }
     }
 
     private Claims parseClaims(String token) {
@@ -44,7 +49,7 @@ public class JwtTokenProvider {
         return claims.getSubject();
     }
 
-    private String createToken(User user) {
+    public String createToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + tokenExpiration);
 

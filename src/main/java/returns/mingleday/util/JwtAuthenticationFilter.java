@@ -9,10 +9,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
+import returns.mingleday.service.users.MingleDayUserDetailsService;
 
 import java.io.IOException;
 
@@ -22,12 +23,12 @@ import java.io.IOException;
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private final JwtTokenProvider jwtTokenProvider;
-    private final UserDetailsService userDetailsService;
+    private final MingleDayUserDetailsService mingleDayUserDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         String header = request.getHeader("Authorization");
+
         if (header == null || !header.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
@@ -35,26 +36,21 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        try {
-            if (!token.isEmpty() && jwtTokenProvider.isValidToken(token)) {
+        if (StringUtils.hasText(token) && jwtTokenProvider.isValidToken(token)) {
+            try {
                 String userId = jwtTokenProvider.getUserId(token);
-
-                UserDetails userDetails = userDetailsService.loadUserByUsername(userId);
+                UserDetails userDetails = mingleDayUserDetailsService.loadUserByUsername(userId);
 
                 UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(
-                                userDetails,
-                                null,
-                                userDetails.getAuthorities()
-                        );
+                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("Successfully authenticated user : {}", userDetails.getUsername());
+
+                log.info("[JWT-Filter] 인증 성공: {}", userId);
+            } catch (Exception e) {
+                log.error("[JWT-Filter] 사용자 인증 설정 실패: {}", e.getMessage());
             }
-        } catch (Exception e) {
-            log.error("Security Context에 인증 정보를 설정할 수 없습니다: {}", e.getMessage());
         }
 
         filterChain.doFilter(request, response);

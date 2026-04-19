@@ -27,7 +27,7 @@ public class MingleDayUserDetailsService implements UserDetailsService {
         }
 
         return org.springframework.security.core.userdetails.User.builder()
-                .username(user.getEmail())
+                .username(userId)
                 .password(user.getPassword())
                 .roles(user.getRole().toString())
                 .build();
