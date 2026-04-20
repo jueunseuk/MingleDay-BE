@@ -108,6 +108,7 @@ public class User extends BaseTime {
 
     public void resetPassword(String password) {
         this.password = password;
+        this.passwordUpdatedAt = LocalDateTime.now();
     }
 
     public void login() {

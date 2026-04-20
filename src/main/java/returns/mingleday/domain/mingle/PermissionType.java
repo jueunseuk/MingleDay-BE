@@ -4,5 +4,6 @@ public enum PermissionType {
     CREATE,
     MODIFY,
     DELETE,
-    INVITE
+    INVITE,
+    EXPULSION
 }

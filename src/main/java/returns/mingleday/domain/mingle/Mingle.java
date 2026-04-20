@@ -53,7 +53,7 @@ public class Mingle extends BaseTime {
                 .owner(owner)
                 .name(name)
                 .description(description)
-                .profileUrl(profileUrl)
+                .profileUrl("")
                 .usePermission(usePermission != null && usePermission)
                 .useRealname(useRealname != null && useRealname)
                 .mingleType(mingleType)

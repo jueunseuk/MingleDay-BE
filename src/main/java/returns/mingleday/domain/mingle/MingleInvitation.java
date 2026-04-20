@@ -22,15 +22,38 @@ public class MingleInvitation extends BaseTime {
     private Long mingleInvitationId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "mingle_id", nullable = false)
+    private Mingle mingle;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mingle_member_id", nullable = false)
     private MingleMember mingleMember;
 
     @Column(name = "target_email")
     private String targetEmail;
 
-    @Column(name = "isResponse")
-    private Boolean isResponse;
+    @Enumerated(EnumType.STRING)
+    @Column(name = "response_type")
+    private ResponseType responseType;
 
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
+
+    public static MingleInvitation of(Mingle mingle, MingleMember mingleMember, String email) {
+        return MingleInvitation.builder()
+                .mingle(mingle)
+                .mingleMember(mingleMember)
+                .targetEmail(email)
+                .responseType(ResponseType.WAIT)
+                .expiredAt(LocalDateTime.now().plusHours(3))
+                .build();
+    }
+
+    public void accept() {
+        this.responseType = ResponseType.ACCEPT;
+    }
+
+    public void reject() {
+        this.responseType = ResponseType.REJECT;
+    }
 }
