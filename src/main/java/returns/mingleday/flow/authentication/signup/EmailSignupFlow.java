@@ -8,7 +8,7 @@ import returns.mingleday.domain.user.Email;
 import returns.mingleday.domain.user.Purpose;
 import returns.mingleday.domain.user.User;
 import returns.mingleday.model.auth.SignupRequest;
-import returns.mingleday.model.auth.SignupResponse;
+import returns.mingleday.model.auth.TokenResponse;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.user.MailService;
@@ -28,7 +28,7 @@ public class EmailSignupFlow {
     private final MailService mailService;
 
     @Transactional
-    public SignupResponse emailSignup(SignupRequest signupRequest) {
+    public TokenResponse emailSignup(SignupRequest signupRequest) {
         log.info("Signup Request Occurred - email: {}", signupRequest.getEmail());
 
         String email = signupRequest.getEmail();
@@ -51,6 +51,6 @@ public class EmailSignupFlow {
 
         log.info("Success to Register - userId: {}, email: {}", user.getUserId(), StringMasking.emailMasking(user.getEmail()));
 
-        return new SignupResponse(jwtTokenProvider.createToken(user));
+        return new TokenResponse(jwtTokenProvider.createToken(user));
     }
 }
