@@ -1,4 +1,4 @@
-package returns.mingleday.service.users;
+package returns.mingleday.service.user;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -8,16 +8,16 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import returns.mingleday.domain.users.Email;
-import returns.mingleday.domain.users.Purpose;
-import returns.mingleday.domain.users.User;
+import returns.mingleday.domain.user.Email;
+import returns.mingleday.domain.user.Purpose;
+import returns.mingleday.domain.user.User;
 import returns.mingleday.repository.EmailRepository;
 import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.EmailExceptionCode;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
-import returns.mingleday.util.Masking;
+import returns.mingleday.util.StringMasking;
 
 import java.util.Optional;
 import java.util.Random;
@@ -62,7 +62,7 @@ public class MailService {
             helper.setText(sb.toString(), true);
             mailSender.send(message);
 
-            log.info("Email send - email: {}, purpose: {}", Masking.emailMasking(email.getEmail()), purpose);
+            log.info("Email send - email: {}, purpose: {}", StringMasking.emailMasking(email.getEmail()), purpose);
         } catch (MessagingException e) {
             log.error(e.getMessage(), e);
             throw new BaseException(EmailExceptionCode.FAILED_TO_SEND_CODE);
@@ -71,10 +71,10 @@ public class MailService {
 
     @Transactional
     public void verifyCode(String email, String code, Purpose purpose) {
-        Email check = emailRepository.findFirstByEmailAndPurpose(email, purpose);
+        Email check = emailRepository.findFirstByEmailAndPurpose(email, purpose).orElse(null);
 
         if(check == null) {
-            log.info("Non-existent mail verification - email: {}, purpose: {}", Masking.emailMasking(email), purpose);
+            log.info("Non-existent mail verification - email: {}, purpose: {}", StringMasking.emailMasking(email), purpose);
             throw new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND);
         }
 
@@ -83,12 +83,22 @@ public class MailService {
         }
 
         if(!check.getCode().equals(code)) {
-            log.info("Verify code mismatch - email: {}, correctCode: {}, inputCode: {}", Masking.emailMasking(email), check.getCode(), code);
+            log.info("Verify code mismatch - email: {}, correctCode: {}, inputCode: {}, tryCount: {}", StringMasking.emailMasking(email), check.getCode(), code, check.getVerifyCnt());
             throw new BaseException(EmailExceptionCode.AUTHENTICATION_CODE_DOES_NOT_MATCH);
         }
 
+        if(check.getVerifyCnt() > 5) {
+            log.warn("Detect suspicious mail code requests - email: {}", email);
+            check.expirationProcess();
+            throw new BaseException(EmailExceptionCode.EXCEEDED_THE_NUMBER_OF_ATTEMPTS);
+        }
+
         check.verify();
-        log.info("Success to verify email - email: {}, purpose: {}", Masking.emailMasking(email), purpose);
+        log.info("Success to verify email - email: {}, purpose: {}, tryCount: {}", StringMasking.emailMasking(email), purpose, check.getVerifyCnt());
+    }
+
+    public Email getLatestEmailRequest(String email, Purpose purpose) {
+        return emailRepository.findFirstByEmailAndPurpose(email, purpose).orElse(null);
     }
 
     private String generateVerificationCode() {

@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
-import returns.mingleday.service.users.MingleDayUserDetailsService;
+import returns.mingleday.service.user.MingleDayUserDetailsService;
 
 import java.io.IOException;
 

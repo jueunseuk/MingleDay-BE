@@ -12,6 +12,7 @@ public enum EmailExceptionCode implements ExceptionCode {
     FAILED_TO_SEND_CODE("EMAIL_002", "메일을 보내는 데 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     AUTHENTICATION_CODE_DOES_NOT_MATCH("EMAIL_003", "메일 인증 코드가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     ALREADY_VERIFY_REQUEST("EMAIL_004", "이미 인증을 완료한 메일 요청입니다.", HttpStatus.BAD_REQUEST),
+    EXCEEDED_THE_NUMBER_OF_ATTEMPTS("EMAIL_005", "인증 시도 횟수를 초과했습니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

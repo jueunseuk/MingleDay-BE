@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import returns.mingleday.domain.users.User;
+import returns.mingleday.domain.user.User;
 
 import java.security.Key;
 import java.util.Date;

@@ -1,4 +1,4 @@
-package returns.mingleday.domain.users;
+package returns.mingleday.domain.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import returns.mingleday.global.domain.BaseTime;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
+import returns.mingleday.util.StringParser;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 
 @Entity
 @Builder
@@ -76,7 +76,7 @@ public class User extends BaseTime {
         }
 
         for(int i = 0; i < name.length(); i++) {
-            if(getCharacterType(name.charAt(i)) == 3) {
+            if(StringParser.getCharacterType(name.charAt(i)) == 3) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
         }
@@ -93,7 +93,7 @@ public class User extends BaseTime {
         int symbol = 0;
 
         for(char c : chars) {
-            switch(getCharacterType(c)) {
+            switch(StringParser.getCharacterType(c)) {
                 case 1: alphabet++; break;
                 case 2: number++; break;
                 case 3: symbol++; break;
@@ -106,23 +106,23 @@ public class User extends BaseTime {
         }
     }
 
-    private static Integer getCharacterType(char c) {
-        if(Character.isLetter(c)) {
-            return 1;
-        } else if(Character.isDigit(c)) {
-            return 2;
-        } else if(SPECIAL_CHARS.contains(c)) {
-            return 3;
-        }
-
-        return -1;
+    public void resetPassword(String password) {
+        this.password = password;
     }
-
-    private static final Set<Character> SPECIAL_CHARS = Set.of(
-            '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '[', ']', '{', '}', '.', '?'
-    );
 
     public void login() {
         this.lastLoginAt = LocalDateTime.now();
+    }
+
+    public void updateProfileUrl(String path) {
+        this.profileUrl = path;
+    }
+
+    public void updateProfileInfo(String name, String nickname) {
+        isValidName(name);
+        isValidName(nickname);
+
+        this.name = name;
+        this.nickname = nickname;
     }
 }

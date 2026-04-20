@@ -1,12 +1,12 @@
-package returns.mingleday.flow.authentication.signup;
+package returns.mingleday.flow.authentication.login;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import returns.mingleday.domain.users.Status;
-import returns.mingleday.domain.users.User;
+import returns.mingleday.domain.user.Status;
+import returns.mingleday.domain.user.User;
 import returns.mingleday.model.auth.LoginRequest;
-import returns.mingleday.model.auth.SignupResponse;
+import returns.mingleday.model.auth.TokenResponse;
 import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
@@ -20,7 +20,7 @@ public class EmailLoginFlow {
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
 
-    public SignupResponse emailLogin(LoginRequest request) {
+    public TokenResponse emailLogin(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new BaseException(UserExceptionCode.NOT_EXIST_USER));
 
@@ -34,6 +34,6 @@ public class EmailLoginFlow {
 
         user.login();
 
-        return new SignupResponse(jwtTokenProvider.createToken(user));
+        return new TokenResponse(jwtTokenProvider.createToken(user));
     }
 }
