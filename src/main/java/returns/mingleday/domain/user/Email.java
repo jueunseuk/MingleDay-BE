@@ -65,7 +65,7 @@ public class Email extends BaseTime {
                 .build();
     }
 
-    private static void validEmail(String email) {
+    public static void validEmail(String email) {
         if(email == null || email.length() <= 3 || !email.contains("@") || !email.contains(".")) {
             throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
         }

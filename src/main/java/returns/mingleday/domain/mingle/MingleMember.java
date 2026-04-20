@@ -18,7 +18,7 @@ public class MingleMember extends BaseTime {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mingle_member_id", nullable = false)
-    private Integer mingleMemberId;
+    private Long mingleMemberId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mingle_id", nullable = false)
@@ -27,4 +27,8 @@ public class MingleMember extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
+
+    public static MingleMember of(Mingle mingle, User user) {
+        return MingleMember.builder().mingle(mingle).user(user).build();
+    }
 }
