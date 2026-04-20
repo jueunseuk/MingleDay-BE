@@ -15,6 +15,7 @@ import returns.mingleday.response.code.MingleInvitationExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleInvitationService;
 import returns.mingleday.service.mingle.MingleMemberService;
+import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.user.UserService;
 
 import java.time.LocalDateTime;
@@ -27,6 +28,7 @@ public class ResponseMingleInvitationFlow {
     private final UserService userService;
     private final MingleInvitationService mingleInvitationService;
     private final MingleMemberService mingleMemberService;
+    private final MinglePermissionService minglePermissionService;
 
     @Transactional
     public ResponseMingleResponse responseMingleInvitation(Integer userId, ResponseMingleRequest request) {
@@ -48,6 +50,7 @@ public class ResponseMingleInvitationFlow {
 
         if(request.getResponseType() == ResponseType.ACCEPT) {
             MingleMember mingleMember = mingleMemberService.createMingleMember(mingleInvitation.getMingle(), user);
+            minglePermissionService.createFullPermissions(mingleMember, false);
             mingleInvitation.accept();
             log.info("An user has accepted the invitation - userId: {}, memberId: {}", userId, mingleMember.getMingleMemberId());
         } else {

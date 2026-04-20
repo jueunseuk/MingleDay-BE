@@ -31,4 +31,11 @@ public class MingleMember extends BaseTime {
     public static MingleMember of(Mingle mingle, User user) {
         return MingleMember.builder().mingle(mingle).user(user).build();
     }
+
+    public String getDisplayName() {
+        if (this.mingle.getUseRealname()) {
+            return this.user.getName();
+        }
+        return this.user.getNickname();
+    }
 }

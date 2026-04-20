@@ -32,7 +32,7 @@ public class CreateMingleFlow {
 
         MingleMember mingleMember = mingleMemberService.createMingleMember(mingle, user);
 
-        minglePermissionService.createFullPermissions(mingleMember);
+        minglePermissionService.createFullPermissions(mingleMember, true);
         log.info("Create full permissions for member: {}", mingleMember.getMingleMemberId());
 
         return mingle.getMingleId();
