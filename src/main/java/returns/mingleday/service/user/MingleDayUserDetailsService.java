@@ -1,12 +1,13 @@
-package returns.mingleday.service.users;
+package returns.mingleday.service.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import returns.mingleday.domain.users.Status;
-import returns.mingleday.domain.users.User;
+import returns.mingleday.domain.user.Status;
+import returns.mingleday.domain.user.User;
+import returns.mingleday.global.authentication.AuthUserDetail;
 import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
@@ -26,10 +27,6 @@ public class MingleDayUserDetailsService implements UserDetailsService {
             throw new BaseException(UserExceptionCode.INACTIVE_USER);
         }
 
-        return org.springframework.security.core.userdetails.User.builder()
-                .username(userId)
-                .password(user.getPassword())
-                .roles(user.getRole().toString())
-                .build();
+        return new AuthUserDetail(user);
     }
 }

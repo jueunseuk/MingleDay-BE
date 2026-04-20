@@ -12,6 +12,7 @@ public enum GlobalExceptionCode implements ExceptionCode {
     INVALID_VALUE_REQUEST("GLOBAL_002", "유효하지 않은 값 주입 시도입니다.", HttpStatus.BAD_REQUEST),
     FORBIDDEN("GLOBAL_003", "해당 요청울 실행할 권한이 없습니다.", HttpStatus.FORBIDDEN),
     INTERNAL_SERVER_ERROR("GLOBAL_004", "서버 내부 에러로 인해 요청을 실행할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+    INVALID_REQUEST("GLOBAL_005", "유효하지 않은 요청입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

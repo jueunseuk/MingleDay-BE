@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import returns.mingleday.domain.users.User;
+import returns.mingleday.domain.user.User;
 import returns.mingleday.global.domain.BaseTime;
 
 @Entity

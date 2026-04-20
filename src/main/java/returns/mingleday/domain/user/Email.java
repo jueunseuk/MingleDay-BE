@@ -1,4 +1,4 @@
-package returns.mingleday.domain.users;
+package returns.mingleday.domain.user;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -41,6 +41,9 @@ public class Email extends BaseTime {
     @Column(name = "is_verified", nullable = false)
     private Boolean isVerified;
 
+    @Column(name = "verify_cnt", nullable = false)
+    private Integer verifyCnt;
+
     public static Email of(String email, Purpose purpose, String authCode) {
         validEmail(email);
 
@@ -58,6 +61,7 @@ public class Email extends BaseTime {
                 .expiredAt(LocalDateTime.now().plusMinutes(timeToExpire))
                 .code(authCode)
                 .isVerified(false)
+                .verifyCnt(0)
                 .build();
     }
 
@@ -68,9 +72,14 @@ public class Email extends BaseTime {
     }
 
     public void verify() {
+        this.verifyCnt++;
         if(LocalDateTime.now().isAfter(expiredAt)) {
             throw new BaseException(UserExceptionCode.AUTHENTICATED_TIME_EXPIRES);
         }
         this.isVerified = true;
+    }
+
+    public void expirationProcess() {
+        this.expiredAt = LocalDateTime.now();
     }
 }

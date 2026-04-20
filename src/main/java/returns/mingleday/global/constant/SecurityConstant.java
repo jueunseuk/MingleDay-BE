@@ -19,6 +19,8 @@ public class SecurityConstant {
             "/api/v1/auth/signup",
             "/api/v1/auth/login",
             "/api/v1/auth/email/*",
+            "/api/v1/auth/password/reset",
+            "/image/**",
             "/api/v1/test/ping"
     );
 }

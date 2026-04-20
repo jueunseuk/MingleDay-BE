@@ -1,7 +1,7 @@
 package returns.mingleday.model.email;
 
 import lombok.Data;
-import returns.mingleday.domain.users.Purpose;
+import returns.mingleday.domain.user.Purpose;
 
 @Data
 public class EmailMatchRequest {

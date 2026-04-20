@@ -3,15 +3,17 @@ package returns.mingleday.controller.user;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import returns.mingleday.flow.authentication.password.ResetPasswordFlow;
 import returns.mingleday.flow.authentication.signup.EmailLoginFlow;
 import returns.mingleday.flow.authentication.signup.EmailSignupFlow;
 import returns.mingleday.model.auth.LoginRequest;
+import returns.mingleday.model.auth.PasswordResetRequest;
 import returns.mingleday.model.auth.SignupRequest;
 import returns.mingleday.model.auth.SignupResponse;
 import returns.mingleday.model.email.EmailCodeRequest;
 import returns.mingleday.model.email.EmailMatchRequest;
 import returns.mingleday.response.success.SuccessResponse;
-import returns.mingleday.service.users.MailService;
+import returns.mingleday.service.user.MailService;
 
 @RestController
 @RequiredArgsConstructor
@@ -21,6 +23,7 @@ public class AuthController {
     private final MailService mailService;
     private final EmailSignupFlow emailSignupFlow;
     private final EmailLoginFlow emailLoginFlow;
+    private final ResetPasswordFlow resetPasswordFlow;
 
     @PostMapping("/signup")
     public ResponseEntity<SignupResponse> signup(@RequestBody SignupRequest request) {
@@ -44,5 +47,11 @@ public class AuthController {
     public ResponseEntity<SuccessResponse<String>> signupCodeCheck(@RequestBody EmailMatchRequest request) {
         mailService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
         return ResponseEntity.ok(SuccessResponse.success("Matches with authentication code"));
+    }
+
+    @PostMapping("/password/reset")
+    public ResponseEntity<SuccessResponse<String>> passwordReset(@RequestBody PasswordResetRequest request) {
+        resetPasswordFlow.resetPassword(request.getEmail(), request.getPassword());
+        return ResponseEntity.ok(SuccessResponse.success("Success to reset password"));
     }
 }
