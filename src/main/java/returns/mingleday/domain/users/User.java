@@ -111,14 +111,14 @@ public class User extends BaseTime {
             return 1;
         } else if(Character.isDigit(c)) {
             return 2;
-        } else if(SPECIAL_CHARS.contains(c)) {
+        } else if(ALLOWED_CHARS.contains(c)) {
             return 3;
         }
 
         return -1;
     }
 
-    private static final Set<Character> SPECIAL_CHARS = Set.of(
+    private static final Set<Character> ALLOWED_CHARS = Set.of(
             '!', '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '-', '+', '=', '[', ']', '{', '}', '.', '?'
     );
 
