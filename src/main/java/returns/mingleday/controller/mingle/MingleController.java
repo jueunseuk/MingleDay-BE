@@ -17,7 +17,7 @@ import returns.mingleday.response.success.SuccessResponse;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/mingle")
+@RequestMapping("/api/v1/mingles")
 public class MingleController {
 
     private final CreateMingleFlow createMingleFlow;

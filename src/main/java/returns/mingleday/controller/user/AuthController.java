@@ -47,19 +47,19 @@ public class AuthController {
         return ResponseEntity.ok(SuccessResponse.success("Verify for logout request"));
     }
 
-    @PostMapping("/email/send")
+    @PostMapping("/email/codes")
     public ResponseEntity<SuccessResponse<String>> mailSend(@RequestBody EmailCodeRequest request){
         emailService.sendVerifyCode(request.getEmail(), request.getPurpose());
         return ResponseEntity.ok(SuccessResponse.success("Success to request authentication code"));
     }
 
-    @PostMapping("/email/verify")
+    @PostMapping("/email/codes/verify")
     public ResponseEntity<SuccessResponse<String>> signupCodeCheck(@RequestBody EmailMatchRequest request) {
         emailService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
         return ResponseEntity.ok(SuccessResponse.success("Matches with authentication code"));
     }
 
-    @PostMapping("/password/reset")
+    @PatchMapping("/password/reset")
     public ResponseEntity<SuccessResponse<String>> passwordReset(@RequestBody PasswordResetRequest request) {
         resetPasswordFlow.resetPassword(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(SuccessResponse.success("Success to reset password"));

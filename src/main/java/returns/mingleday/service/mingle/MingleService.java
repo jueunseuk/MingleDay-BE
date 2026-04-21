@@ -37,8 +37,8 @@ public class MingleService {
         return mingleRepository.save(mingle);
     }
 
-    public Mingle findMingleById(Integer id) {
-        return mingleRepository.findById(id)
+    public Mingle findMingleById(Integer mingleId) {
+        return mingleRepository.findById(mingleId)
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

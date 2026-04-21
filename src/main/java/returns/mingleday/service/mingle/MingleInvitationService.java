@@ -16,7 +16,7 @@ import returns.mingleday.repository.MingleInvitationRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.user.UserService;
-import returns.mingleday.util.MailSender;
+import returns.mingleday.util.MailUtil;
 
 import java.util.List;
 
@@ -27,13 +27,13 @@ public class MingleInvitationService {
 
     private final MingleInvitationRepository mingleInvitationRepository;
     private final UserService userService;
-    private final MailSender mailSender;
+    private final MailUtil mailUtil;
 
     @Transactional
     public void createMingleInvitation(Mingle mingle, MingleMember mingleMember, String email) {
         Email.validEmail(email);
 
-        mailSender.sendMail(
+        mailUtil.sendMail(
                 email,
                 MailMessageConstant.INVITATION_TITLE(mingleMember.getDisplayName()),
                 MailMessageConstant.INVITATION_CONTENT(

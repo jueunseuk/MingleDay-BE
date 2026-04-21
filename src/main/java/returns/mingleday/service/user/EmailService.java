@@ -14,7 +14,7 @@ import returns.mingleday.response.code.EmailExceptionCode;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
-import returns.mingleday.util.MailSender;
+import returns.mingleday.util.MailUtil;
 import returns.mingleday.util.StringMasking;
 
 import java.util.Optional;
@@ -25,7 +25,7 @@ import java.util.Random;
 @Slf4j
 public class EmailService {
 
-    private final MailSender mailSender;
+    private final MailUtil mailUtil;
     private final UserRepository userRepository;
     private final EmailRepository emailRepository;
 
@@ -49,7 +49,7 @@ public class EmailService {
             default -> "서비스 이용을 위한 인증 코드입니다.";
         };
 
-        mailSender.sendMail(email.getEmail(), MailMessageConstant.VERIFY_CODE_TITLE(), MailMessageConstant.VERIFY_CODE_CONTENT(purposeText, authCode), purpose);
+        mailUtil.sendMail(email.getEmail(), MailMessageConstant.VERIFY_CODE_TITLE(), MailMessageConstant.VERIFY_CODE_CONTENT(purposeText, authCode), purpose);
     }
 
     @Transactional

@@ -4,5 +4,5 @@ public enum RepeatType {
     DAILY,
     WEEKLY,
     MONTHLY,
-    GAP
+    INTERVAL
 }

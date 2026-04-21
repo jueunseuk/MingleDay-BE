@@ -18,7 +18,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/mingle/invitation")
+@RequestMapping("/api/v1/mingles/invitation")
 public class MingleInvitationController {
 
     private final InviteMingleFlow inviteMingleFlow;

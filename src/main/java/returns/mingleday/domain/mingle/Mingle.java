@@ -73,7 +73,7 @@ public class Mingle extends BaseTime {
     }
 
     private static void isValidName(String name) {
-        if(name == null || name.length() < 2 || name.length() > 20) {
+        if(name == null || name.length() < 2 || name.length() > 30) {
             throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
         }
 

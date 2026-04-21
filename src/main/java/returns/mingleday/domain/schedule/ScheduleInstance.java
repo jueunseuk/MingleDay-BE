@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import returns.mingleday.global.domain.BaseTime;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Builder
@@ -26,10 +26,10 @@ public class ScheduleInstance extends BaseTime {
     private Schedule schedule;
 
     @Column(name = "start_at")
-    private LocalDate startAt;
+    private LocalDateTime startAt;
 
     @Column(name = "end_at")
-    private LocalDate endAt;
+    private LocalDateTime endAt;
 
     @Column(name = "memo")
     private String memo;
@@ -40,9 +40,26 @@ public class ScheduleInstance extends BaseTime {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "prev_schedule_instance_id")
-    private ScheduleInstance prevScheduleInstanceId;
+    private ScheduleInstance prevScheduleInstance;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "next_schedule_instance_id")
-    private ScheduleInstance nextScheduleInstanceId;
+    private ScheduleInstance nextScheduleInstance;
+
+    public static ScheduleInstance of(Schedule schedule, LocalDateTime startAt, LocalDateTime endAt, String memo) {
+        return ScheduleInstance.builder()
+                .schedule(schedule)
+                .startAt(startAt)
+                .endAt(endAt)
+                .memo(memo)
+                .scheduleStatus(endAt.isBefore(LocalDateTime.now()) ? ScheduleStatus.COMPLETED : ScheduleStatus.TODO)
+                .prevScheduleInstance(null)
+                .nextScheduleInstance(null)
+                .build();
+    }
+
+    public void linking(ScheduleInstance prevScheduleInstance, ScheduleInstance nextScheduleInstance) {
+        this.prevScheduleInstance = prevScheduleInstance;
+        this.nextScheduleInstance = nextScheduleInstance;
+    }
 }

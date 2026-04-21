@@ -15,7 +15,7 @@ import returns.mingleday.response.exception.BaseException;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class MailSender {
+public class MailUtil {
 
     private final JavaMailSender mailSender;
 
