@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.MingleInvitation;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.ResponseType;
 import returns.mingleday.domain.user.User;
@@ -15,6 +16,8 @@ import returns.mingleday.response.code.MingleInvitationExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleInvitationService;
 import returns.mingleday.service.mingle.MingleMemberService;
+import returns.mingleday.service.mingle.MinglePermissionService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.user.UserService;
 
 import java.time.LocalDateTime;
@@ -27,6 +30,8 @@ public class ResponseMingleInvitationFlow {
     private final UserService userService;
     private final MingleInvitationService mingleInvitationService;
     private final MingleMemberService mingleMemberService;
+    private final MinglePermissionService minglePermissionService;
+    private final CreateMingleLogService createMingleLogService;
 
     @Transactional
     public ResponseMingleResponse responseMingleInvitation(Integer userId, ResponseMingleRequest request) {
@@ -48,7 +53,9 @@ public class ResponseMingleInvitationFlow {
 
         if(request.getResponseType() == ResponseType.ACCEPT) {
             MingleMember mingleMember = mingleMemberService.createMingleMember(mingleInvitation.getMingle(), user);
+            minglePermissionService.createFullPermissions(mingleMember, !mingleInvitation.getMingle().getUsePermission());
             mingleInvitation.accept();
+            createMingleLogService.execute(mingleInvitation.getMingle(), mingleMember, null, MingleLogType.JOIN);
             log.info("An user has accepted the invitation - userId: {}, memberId: {}", userId, mingleMember.getMingleMemberId());
         } else {
             mingleInvitation.reject();

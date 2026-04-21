@@ -126,4 +126,8 @@ public class User extends BaseTime {
         this.name = name;
         this.nickname = nickname;
     }
+
+    public void toDormant() {
+        this.status = Status.DORMANT;
+    }
 }

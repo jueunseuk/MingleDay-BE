@@ -6,5 +6,7 @@ public enum MingleLogType {
     DELETE,
     COMPLETE,
     JOIN,
-    LEAVE
+    LEAVE,
+    EXPULSION,
+    PERMISSION,
 }

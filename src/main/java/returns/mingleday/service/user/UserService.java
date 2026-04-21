@@ -11,6 +11,9 @@ import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -40,5 +43,16 @@ public class UserService {
         User user = findUserByUserId(userId);
         user.updateProfileInfo(request.getName(), request.getNickname());
         log.info("Success to update profile info - userId : {}", userId);
+    }
+
+    public Integer userToDormant(Integer month) {
+        LocalDateTime monthAgo = LocalDateTime.now().minusMonths(month);
+        List<User> candidates = userRepository.findAllByLastLoginAtLessThan(monthAgo);
+
+        for(User user : candidates) {
+            user.toDormant();
+        }
+
+        return candidates.size();
     }
 }

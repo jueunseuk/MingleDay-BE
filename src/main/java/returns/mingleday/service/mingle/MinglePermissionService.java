@@ -21,12 +21,12 @@ public class MinglePermissionService {
     private final MinglePermissionRepository minglePermissionRepository;
 
     @Transactional
-    public void createFullPermissions(MingleMember mingleMember) {
+    public void createFullPermissions(MingleMember mingleMember, Boolean value) {
         minglePermissionRepository.saveAll(Arrays.stream(PermissionType.values())
                                             .map(type -> MinglePermission.builder()
                                                     .mingleMember(mingleMember)
                                                     .permissionType(type)
-                                                    .value(true)
+                                                    .value(value)
                                                     .build())
                                             .toList());
     }
