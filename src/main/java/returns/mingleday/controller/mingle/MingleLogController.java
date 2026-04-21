@@ -16,18 +16,18 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/mingle/log")
+@RequestMapping("/api/v1/mingles")
 public class MingleLogController {
 
     private final MingleLogService mingleLogService;
 
-    @GetMapping("/all/me")
+    @GetMapping("/logs/me")
     public ResponseEntity<List<MyMingleLogResponse>> getAllMingleLog(@AuthenticationPrincipal AuthUserDetail user) {
         List<MyMingleLogResponse> response = mingleLogService.getAllMyMingleLog(user.getUserId());
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/all/{mingleId}")
+    @GetMapping("/{mingleId}/logs")
     public ResponseEntity<List<MingleLogResponse>> getAllMingleLog(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
         List<MingleLogResponse> response = mingleLogService.getAllMingleLog(user.getUserId(), mingleId);
         return ResponseEntity.ok(response);

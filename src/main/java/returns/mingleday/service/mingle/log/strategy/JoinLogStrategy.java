@@ -12,7 +12,7 @@ public class JoinLogStrategy implements CreateMingleLogInterface {
                 mingle,
                 operator.getMingleMemberId(),
                 operator.getDisplayName(),
-                TargetType.NONE,
+                TargetType.MINGLE,
                 content,
                 MingleLogType.JOIN
         );

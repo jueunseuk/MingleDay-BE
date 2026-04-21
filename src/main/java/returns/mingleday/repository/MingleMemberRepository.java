@@ -23,4 +23,6 @@ public interface MingleMemberRepository extends JpaRepository<MingleMember, Long
 
     @Query("SELECT m.mingle FROM MingleMember m WHERE m.user = :user")
     List<Mingle> findMingleByUser(User user);
+
+    Boolean existsByMingleAndUser(Mingle mingle, User user);
 }

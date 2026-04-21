@@ -16,32 +16,32 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/mingle/member")
+@RequestMapping("/api/v1/mingles/{mingleId}/members")
 public class MingleMemberController {
 
     private final MingleMemberService mingleMemberService;
     private final KickMingleMemberFlow kickMingleMemberFlow;
     private final LeaveMingleMemberFlow leaveMingleMemberFlow;
 
-    @GetMapping("/{mingleId}/{mingleMemberId}")
+    @GetMapping("/{mingleMemberId}")
     public ResponseEntity<MingleMemberResponse> getMingleMember(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @PathVariable Long mingleMemberId) {
         MingleMemberResponse response = mingleMemberService.getMingleMember(user.getUserId(), mingleId, mingleMemberId);
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{mingleId}")
+    @GetMapping
     public ResponseEntity<List<MingleMembersResponse>> getMingleMembers(@AuthenticationPrincipal AuthUserDetail user, @PathVariable("mingleId") Integer mingleId) {
         List<MingleMembersResponse> list = mingleMemberService.getMingleMembers(user.getUserId(), mingleId);
         return ResponseEntity.ok(list);
     }
 
-    @DeleteMapping("/{mingleId}/{mingleMemberId}")
+    @DeleteMapping("/{mingleMemberId}")
     public ResponseEntity<SuccessResponse<String>> kickMingleMember(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @PathVariable Long mingleMemberId) {
         kickMingleMemberFlow.kickMingleMember(user.getUserId(), mingleId, mingleMemberId);
         return ResponseEntity.ok(SuccessResponse.success("Success to kick mingle member"));
     }
 
-    @DeleteMapping("/{mingleId}/leave")
+    @DeleteMapping("/leave")
     public ResponseEntity<SuccessResponse<String>> leaveMingleMember(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
         leaveMingleMemberFlow.leaveMingleMember(user.getUserId(), mingleId);
         return ResponseEntity.ok(SuccessResponse.success("Success to leave mingle member"));

@@ -16,14 +16,14 @@ import returns.mingleday.model.email.EmailCodeRequest;
 import returns.mingleday.model.email.EmailMatchRequest;
 import returns.mingleday.response.success.SuccessResponse;
 import returns.mingleday.service.user.AuthService;
-import returns.mingleday.service.user.MailService;
+import returns.mingleday.service.user.EmailService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
-    private final MailService mailService;
+    private final EmailService emailService;
     private final EmailSignupFlow emailSignupFlow;
     private final EmailLoginFlow emailLoginFlow;
     private final ResetPasswordFlow resetPasswordFlow;
@@ -47,19 +47,19 @@ public class AuthController {
         return ResponseEntity.ok(SuccessResponse.success("Verify for logout request"));
     }
 
-    @PostMapping("/email/send")
+    @PostMapping("/email/codes")
     public ResponseEntity<SuccessResponse<String>> mailSend(@RequestBody EmailCodeRequest request){
-        mailService.sendMail(request.getEmail(), request.getPurpose());
+        emailService.sendVerifyCode(request.getEmail(), request.getPurpose());
         return ResponseEntity.ok(SuccessResponse.success("Success to request authentication code"));
     }
 
-    @PostMapping("/email/verify")
+    @PostMapping("/email/codes/verify")
     public ResponseEntity<SuccessResponse<String>> signupCodeCheck(@RequestBody EmailMatchRequest request) {
-        mailService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
+        emailService.verifyCode(request.getEmail(), request.getCode(), request.getPurpose());
         return ResponseEntity.ok(SuccessResponse.success("Matches with authentication code"));
     }
 
-    @PostMapping("/password/reset")
+    @PatchMapping("/password/reset")
     public ResponseEntity<SuccessResponse<String>> passwordReset(@RequestBody PasswordResetRequest request) {
         resetPasswordFlow.resetPassword(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(SuccessResponse.success("Success to reset password"));

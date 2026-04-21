@@ -14,6 +14,7 @@ public enum GlobalExceptionCode implements ExceptionCode {
     INTERNAL_SERVER_ERROR("GLOBAL_004", "서버 내부 에러로 인해 요청을 실행할 수 없습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
     INVALID_REQUEST("GLOBAL_005", "유효하지 않은 요청입니다.", HttpStatus.BAD_REQUEST),
     EXPIRED_REQUEST("GLOBAL_006", "이미 만료된 요청입니다.", HttpStatus.BAD_REQUEST),
+    BAD_REQUEST_FOR_MISMATCH("GLOBAL_007", "요청 본문의 ID와 경로의 ID가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;

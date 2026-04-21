@@ -11,8 +11,6 @@ import returns.mingleday.repository.MingleRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -39,8 +37,17 @@ public class MingleService {
         return mingleRepository.save(mingle);
     }
 
-    public Mingle findMingleById(Integer id) {
-        return mingleRepository.findById(id)
+    public Mingle findMingleById(Integer mingleId) {
+        return mingleRepository.findById(mingleId)
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    public void updateMingle(Mingle mingle, String name, String description, Boolean usePermission, Boolean useRealname) {
+        mingle.updateInfo(
+                name,
+                description,
+                usePermission,
+                useRealname
+        );
     }
 }
