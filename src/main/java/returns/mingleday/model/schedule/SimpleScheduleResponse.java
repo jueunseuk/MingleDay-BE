@@ -3,6 +3,7 @@ package returns.mingleday.model.schedule;
 import lombok.Data;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.model.category.CategoryResponse;
 
 @Data
 public class SimpleScheduleResponse {
@@ -15,6 +16,7 @@ public class SimpleScheduleResponse {
     private Boolean isRepeated;
     private Boolean isLocked;
     private Boolean isPrivate;
+    private CategoryResponse category;
     private SimpleScheduleInstanceResponse scheduleInstance;
 
     public SimpleScheduleResponse(Schedule schedule, SimpleScheduleInstanceResponse scheduleInstance) {
@@ -26,6 +28,7 @@ public class SimpleScheduleResponse {
         this.isRepeated = schedule.getIsRepeated();
         this.isLocked = schedule.getIsLocked();
         this.isPrivate = schedule.getIsPrivate();
+        this.category = new CategoryResponse(schedule.getCategory());
         this.scheduleInstance = scheduleInstance;
     }
 

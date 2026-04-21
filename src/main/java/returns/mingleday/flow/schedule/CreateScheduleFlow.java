@@ -87,6 +87,9 @@ public class CreateScheduleFlow {
             if(start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
+            if(start.getDayOfYear() != end.getDayOfYear()) {
+                throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
+            }
 
             // 인스턴스 반복 생성
             List<ScheduleInstance> scheduleInstances = new ArrayList<>();

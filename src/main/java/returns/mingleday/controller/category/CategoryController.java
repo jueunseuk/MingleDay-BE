@@ -20,7 +20,7 @@ public class CategoryController {
     private final CategoryService categoryService;
 
     @GetMapping("/all")
-    public ResponseEntity<List<CategoryResponse>> getAllCategories(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
+    public ResponseEntity<List<CategoryResponse>> getAllMingleCategories(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
         List<CategoryResponse> response = categoryService.getAllCategoryByMingle(user.getUserId(), mingleId);
         return ResponseEntity.ok(response);
     }

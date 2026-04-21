@@ -46,4 +46,9 @@ public class ScheduleRecurrenceService {
 
         return scheduleRecurrenceRepository.save(scheduleRecurrence);
     }
+
+    public void deleteAllBySchedule(Schedule schedule) {
+        scheduleRecurrenceRepository.deleteAllBySchedule(schedule);
+        log.info("delete all schedule recurrence");
+    }
 }

@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import returns.mingleday.domain.mingle.MingleType;
 
 @Entity
 @Builder
@@ -17,6 +18,10 @@ public class CategoryTemplate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "category_template_id", nullable = false)
     private Integer categoryTemplateId;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "mingle_type")
+    private MingleType mingleType;
 
     @Column(name = "name")
     private String name;

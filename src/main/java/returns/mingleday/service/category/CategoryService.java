@@ -5,20 +5,26 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.category.Category;
+import returns.mingleday.domain.category.CategoryTemplate;
 import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.mingle.MingleMember;
+import returns.mingleday.domain.mingle.MingleType;
 import returns.mingleday.domain.mingle.PermissionType;
+import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
 import returns.mingleday.model.category.CategoryResponse;
 import returns.mingleday.model.category.UpsertCategoryRequest;
 import returns.mingleday.repository.CategoryRepository;
+import returns.mingleday.repository.ScheduleRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.user.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -26,11 +32,14 @@ import java.util.List;
 @Slf4j
 public class CategoryService {
 
-    private final CategoryRepository categoryRepository;
     private final UserService userService;
     private final MingleService mingleService;
+    private final CategoryRepository categoryRepository;
+    private final ScheduleRepository scheduleRepository;
     private final MingleMemberService mingleMemberService;
+    private final ScheduleSearchService scheduleSearchService;
     private final MinglePermissionService minglePermissionService;
+    private final CategoryTemplateService categoryTemplateService;
 
     public Category findCategoryByIdAndMingle(Long categoryId, Mingle mingle) {
         return categoryRepository.findCategoryByCategoryIdAndMingle(categoryId, mingle)
@@ -124,7 +133,36 @@ public class CategoryService {
 
         Category category = findCategoryByIdAndMingle(categoryId, mingle);
 
+        List<Schedule> schedules = scheduleSearchService.findScheduleByCategory(category);
+        for(Schedule schedule : schedules) {
+            schedule.cleanCategory();
+        }
+        scheduleRepository.flush();
+
         log.info("Delete a category - userId: {}, categoryId: {}", userId, category.getCategoryId());
         categoryRepository.delete(category);
+    }
+
+    public Category findCategoryById(Long categoryId) {
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    @Transactional
+    public void createTemplate(Mingle mingle, MingleType mingleType) {
+        List<CategoryTemplate> categoryTemplates = categoryTemplateService.findAllTemplateByMingleType(mingleType);
+
+        List<Category> categories = new ArrayList<>();
+        for(CategoryTemplate categoryTemplate : categoryTemplates) {
+            categories.add(Category.of(
+                    mingle,
+                    categoryTemplate.getName(),
+                    categoryTemplate.getDescription(),
+                    categoryTemplate.getBackgroundColor(),
+                    categoryTemplate.getTextColor())
+            );
+        }
+
+        categoryRepository.saveAll(categories);
     }
 }

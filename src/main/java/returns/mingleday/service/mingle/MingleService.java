@@ -41,4 +41,13 @@ public class MingleService {
         return mingleRepository.findById(mingleId)
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
+
+    public void updateMingle(Mingle mingle, String name, String description, Boolean usePermission, Boolean useRealname) {
+        mingle.updateInfo(
+                name,
+                description,
+                usePermission,
+                useRealname
+        );
+    }
 }

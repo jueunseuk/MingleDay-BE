@@ -9,6 +9,8 @@ import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.schedule.ScheduleMember;
 import returns.mingleday.repository.ScheduleMemberRepository;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -23,5 +25,14 @@ public class ScheduleMemberService {
                 mingleMember,
                 memo.isEmpty() ? "" : memo
         );
+    }
+
+    public List<ScheduleMember> findScheduleMemberBySchedule(Schedule schedule) {
+        return scheduleMemberRepository.findAllBySchedule(schedule);
+    }
+
+    public void deleteAllBySchedule(Schedule schedule) {
+        scheduleMemberRepository.deleteAllBySchedule(schedule);
+        log.info("delete all schedule member");
     }
 }

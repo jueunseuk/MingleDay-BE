@@ -62,4 +62,14 @@ public class ScheduleInstance extends BaseTime {
         this.prevScheduleInstance = prevScheduleInstance;
         this.nextScheduleInstance = nextScheduleInstance;
     }
+
+    public void updateStatus(ScheduleStatus status) {
+        this.scheduleStatus = status;
+    }
+
+    public void update(LocalDateTime startAt, LocalDateTime endAt, String memo) {
+        this.startAt = startAt;
+        this.endAt = endAt;
+        this.memo = memo;
+    }
 }

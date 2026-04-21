@@ -43,12 +43,8 @@ public class UpdateMingleInfoFlow {
         }
 
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
-        mingle.updateInfo(
-                request.getName(),
-                request.getDescription(),
-                request.getUsePermission(),
-                request.getUseRealname()
-        );
+
+        mingleService.updateMingle(mingle, request.getName(), request.getDescription(), request.getUsePermission(), request.getUseRealname());
 
         createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.MODIFY);
         log.info("Update a mingle information - userId: {}, mingleId: {}", userId, mingleId);

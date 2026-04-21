@@ -71,6 +71,17 @@ public class Schedule extends BaseTime {
                 .build();
     }
 
+    public void update(String title, String content, String location, Category category, Boolean isLocked, Boolean isPrivate) {
+        isValidName(title);
+
+        this.title = title;
+        this.content = content;
+        this.location = location;
+        this.category = category;
+        this.isRepeated = isLocked;
+        this.isLocked = isPrivate;
+    }
+
     private static void isValidName(String title) {
         if(title == null || title.isEmpty() || title.length() > 30) {
             throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
@@ -81,5 +92,9 @@ public class Schedule extends BaseTime {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
         }
+    }
+
+    public void cleanCategory() {
+        this.category = null;
     }
 }
