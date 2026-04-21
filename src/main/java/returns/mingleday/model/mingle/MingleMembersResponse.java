@@ -1,4 +1,4 @@
-package returns.mingleday.flow.mingle;
+package returns.mingleday.model.mingle;
 
 import lombok.Data;
 import returns.mingleday.domain.mingle.MingleMember;

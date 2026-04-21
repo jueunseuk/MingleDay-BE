@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.user.User;
-import returns.mingleday.flow.mingle.MingleMembersResponse;
+import returns.mingleday.model.mingle.MingleMemberResponse;
+import returns.mingleday.model.mingle.MingleMembersResponse;
+import returns.mingleday.model.mingle.MinglesResponse;
 import returns.mingleday.repository.MingleMemberRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
@@ -31,8 +33,7 @@ public class MingleMemberService {
     }
 
     public MingleMember getMingleMember(Long mingleMemberId) {
-        return mingleMemberRepository.findById(mingleMemberId)
-                .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
+        return mingleMemberRepository.findById(mingleMemberId).orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 
     public MingleMember getMingleMember(Mingle mingle, User user) {
@@ -45,5 +46,21 @@ public class MingleMemberService {
         Mingle mingle = mingleService.findMingleById(mingleId);
         List<MingleMember> mingleMembers = mingleMemberRepository.findAllByMingle(mingle);
         return mingleMembers.stream().map(mingleMember -> new MingleMembersResponse(user, mingleMember)).toList();
+    }
+
+    public MingleMemberResponse getMingleMember(Integer userId, Integer mingleId, Long mingleMemberId) {
+        Mingle mingle = mingleService.findMingleById(mingleId);
+        MingleMember other = getMingleMember(mingleMemberId);
+
+        List<Mingle> mingles = mingleMemberRepository.findCommonMingles(userId, other.getUser().getUserId(), mingle.getMingleId());
+        return new MingleMemberResponse(other, mingles.stream().map(MinglesResponse::new).toList());
+    }
+
+    public void deleteMingleMember() {
+        // 일정 로직 완료 후 구현 예정
+    }
+
+    public List<Mingle> getAllMingle(User user) {
+        return mingleMemberRepository.findMingleByUser(user);
     }
 }
