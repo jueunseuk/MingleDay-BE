@@ -60,7 +60,7 @@ public class MingleLog extends BaseTime {
     }
 
     public static MingleLog ofTarget(Mingle mingle, Long operatorId, String operatorName, TargetType targetType, Long targetId, String targetName, String content, MingleLogType mingleLogType) {
-        if(targetType == TargetType.NONE || targetId == null || targetName == null) {
+        if(targetType == null || targetId == null || targetName == null) {
             throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
         }
         return MingleLog.builder()

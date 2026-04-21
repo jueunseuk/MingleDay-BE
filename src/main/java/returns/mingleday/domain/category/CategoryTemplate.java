@@ -24,9 +24,9 @@ public class CategoryTemplate {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "background_color", length = 7)
+    @Column(name = "background_color", length = 6)
     private String backgroundColor;
 
-    @Column(name = "text_color", length = 7)
+    @Column(name = "text_color", length = 6)
     private String textColor;
 }

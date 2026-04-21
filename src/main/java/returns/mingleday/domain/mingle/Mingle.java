@@ -60,6 +60,18 @@ public class Mingle extends BaseTime {
                 .build();
     }
 
+    public void updateInfo(String name, String description, Boolean usePermission, Boolean useRealname) {
+        isValidName(name);
+
+        this.description = description;
+        this.usePermission = usePermission != null && usePermission;
+        this.useRealname = useRealname != null && useRealname;
+    }
+
+    public void updateProfile(String path) {
+        this.profileUrl = path;
+    }
+
     private static void isValidName(String name) {
         if(name == null || name.length() < 2 || name.length() > 20) {
             throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);

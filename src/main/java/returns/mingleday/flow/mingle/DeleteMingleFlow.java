@@ -9,9 +9,10 @@ import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.TargetType;
 import returns.mingleday.domain.user.User;
-import returns.mingleday.model.mingle.CreateMingleRequest;
+import returns.mingleday.repository.MingleRepository;
+import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
-import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.user.UserService;
@@ -19,27 +20,29 @@ import returns.mingleday.service.user.UserService;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class CreateMingleFlow {
+public class DeleteMingleFlow {
 
     private final UserService userService;
     private final MingleService mingleService;
+    private final MingleRepository mingleRepository;
     private final MingleMemberService mingleMemberService;
-    private final MinglePermissionService minglePermissionService;
     private final CreateMingleLogService createMingleLogService;
 
     @Transactional
-    public Integer createMingle(Integer userId, CreateMingleRequest request) {
+    public void deleteMingle(Integer userId, Integer mingleId) {
         User user = userService.findUserByUserId(userId);
+        Mingle mingle = mingleService.findMingleById(mingleId);
 
-        Mingle mingle = mingleService.createMingle(user, request);
-        log.info("Create new mingle - owner: {}, mingleId: {}", userId, mingle.getMingleId());
+        if(!mingle.getOwner().equals(user)) {
+            throw new BaseException(GlobalExceptionCode.FORBIDDEN);
+        }
 
-        MingleMember mingleMember = mingleMemberService.createMingleMember(mingle, user);
-        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.CREATE);
+        MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
 
-        minglePermissionService.createFullPermissions(mingleMember, true);
-        log.info("Create full permissions for member: {}", mingleMember.getMingleMemberId());
+        // 투표 받는 로직 구현 예정
 
-        return mingle.getMingleId();
+        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.DELETE);
+        mingleRepository.delete(mingle);
+        log.info("Delete a mingle - mingleId: {}", mingleId);
     }
 }

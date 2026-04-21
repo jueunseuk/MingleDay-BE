@@ -63,4 +63,8 @@ public class MingleMemberService {
     public List<Mingle> getAllMingle(User user) {
         return mingleMemberRepository.findMingleByUser(user);
     }
+
+    public Boolean existsByMingleAndUser(Mingle mingle, User user) {
+        return mingleMemberRepository.existsByMingleAndUser(mingle, user);
+    }
 }

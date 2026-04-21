@@ -21,7 +21,14 @@ public class ImageService {
 
         String[] path = fileService.storeFile(file, imageType);
 
-        Image image = Image.of(file.getOriginalFilename(), path[1], path[0], file.getSize(), targetId, imageType);
+        Image image = Image.of(
+                file.getOriginalFilename(),
+                path[1],
+                path[0],
+                file.getSize(),
+                targetId,
+                imageType
+        );
 
         return imageRepository.save(image);
     }

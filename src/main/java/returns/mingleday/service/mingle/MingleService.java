@@ -11,8 +11,6 @@ import returns.mingleday.repository.MingleRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Slf4j
