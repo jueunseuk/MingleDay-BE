@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.category.Category;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.Schedule;
@@ -21,6 +22,7 @@ import returns.mingleday.service.category.CategoryService;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.user.UserService;
 
 import java.time.LocalDateTime;
@@ -37,6 +39,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final MingleMemberService mingleMemberService;
     private final ScheduleSearchService scheduleSearchService;
+    private final CreateMingleLogService createMingleLogService;
     private final MinglePermissionService minglePermissionService;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
 
@@ -82,8 +85,8 @@ public class ScheduleService {
     @Transactional
     public void updateStatus(Integer userId, Integer mingleId, Long scheduleId, Long scheduleInstanceId, ScheduleStatus status) {
         User user = userService.findUserByUserId(userId);
-
         Mingle mingle = mingleService.findMingleById(mingleId);
+        Schedule schedule = scheduleSearchService.findScheduleById(scheduleId);
 
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
         if(mingle.getUsePermission() && !mingle.getOwner().equals(user) && !minglePermissionService.doesMemberHavePermission(mingleMember, PermissionType.MODIFY)) {
@@ -93,6 +96,12 @@ public class ScheduleService {
         ScheduleInstance scheduleInstance = scheduleSearchService.findScheduleInstanceById(scheduleInstanceId);
         if(!scheduleInstance.getSchedule().getMingle().equals(mingle)) {
             throw new BaseException(GlobalExceptionCode.BAD_REQUEST_FOR_MISMATCH);
+        }
+
+        if(status == ScheduleStatus.COMPLETED) {
+            createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.COMPLETE);
+        } else {
+            createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.CANCEL);
         }
 
         scheduleInstance.updateStatus(status);
@@ -137,6 +146,6 @@ public class ScheduleService {
 
     public void deleteSchedule(Schedule schedule) {
         scheduleRepository.delete(schedule);
-        log.info("delete all schedule instance");
+        log.info("delete all schedule instance: scheduleId {}", schedule.getScheduleId());
     }
 }

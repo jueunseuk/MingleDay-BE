@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.*;
@@ -17,6 +18,8 @@ import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
+import returns.mingleday.service.mingle.log.strategy.CreateLogStrategy;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleRecurrenceService;
 import returns.mingleday.service.schedule.ScheduleService;
@@ -44,6 +47,8 @@ public class CreateScheduleFlow {
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleRecurrenceService scheduleRecurrenceService;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
+    private final CreateLogStrategy createLogStrategy;
+    private final CreateMingleLogService createMingleLogService;
 
     @Transactional
     public DetailScheduleResponse createSchedule(Integer userId, Integer mingleId, CreateScheduleRequest request) {
@@ -192,6 +197,7 @@ public class CreateScheduleFlow {
             scheduleInstance2 = null;
         }
 
+        createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.CREATE);
         log.info("Create schedule - userId: {}, scheduleId: {}", userId, schedule.getScheduleId());
         return new DetailScheduleResponse(
                 schedule,

@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.mingle.MingleMember;
+import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
 import returns.mingleday.model.mingle.MingleMemberResponse;
 import returns.mingleday.model.mingle.MingleMembersResponse;
@@ -54,10 +55,6 @@ public class MingleMemberService {
 
         List<Mingle> mingles = mingleMemberRepository.findCommonMingles(userId, other.getUser().getUserId(), mingle.getMingleId());
         return new MingleMemberResponse(other, mingles.stream().map(MinglesResponse::new).toList());
-    }
-
-    public void deleteMingleMember() {
-        // 일정 로직 완료 후 구현 예정
     }
 
     public List<Mingle> getAllMingle(User user) {

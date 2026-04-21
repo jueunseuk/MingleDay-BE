@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import returns.mingleday.domain.category.Category;
+import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.schedule.ScheduleInstance;
+import returns.mingleday.domain.user.User;
 import returns.mingleday.repository.ScheduleInstanceRepository;
 import returns.mingleday.repository.ScheduleRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
@@ -17,7 +19,6 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduleSearchService {
-
 
     private final ScheduleRepository scheduleRepository;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
@@ -34,5 +35,13 @@ public class ScheduleSearchService {
     public ScheduleInstance findScheduleInstanceById(Long scheduleInstanceId) {
         return scheduleInstanceRepository.findById(scheduleInstanceId)
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
+    }
+
+    public List<Schedule> findScheduleByMember(User user) {
+        return scheduleRepository.findAllByOwner(user);
+    }
+
+    public List<Schedule> findScheduleByMingle(Mingle mingle) {
+        return scheduleRepository.findAlLByMingle(mingle);
     }
 }
