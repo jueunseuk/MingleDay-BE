@@ -1,4 +1,4 @@
-package returns.mingleday.service.image;
+package returns.mingleday.util;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class FileService {
+public class FileUtil {
 
     @Value("${file.upload-dir}")
     private String uploadDir;
@@ -40,7 +40,7 @@ public class FileService {
         try {
             Files.createDirectories(targetLocation.getParent());
 
-            file.transferTo(targetLocation.toFile()); // save
+            file.transferTo(targetLocation.toFile()); // save to device
             log.info("Success to save image - saveDir: {}", targetLocation);
             return new String[] {relativePath, targetLocation.toString()};
         } catch (IOException e) {

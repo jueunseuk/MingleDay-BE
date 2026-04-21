@@ -7,19 +7,20 @@ import org.springframework.web.multipart.MultipartFile;
 import returns.mingleday.domain.image.Image;
 import returns.mingleday.domain.image.ImageType;
 import returns.mingleday.repository.ImageRepository;
+import returns.mingleday.util.FileUtil;
 
 @Service
 @Transactional
 @RequiredArgsConstructor
 public class ImageService {
 
-    private final FileService fileService;
+    private final FileUtil fileUtil;
     private final ImageRepository imageRepository;
 
     public Image uploadImage(MultipartFile file, Long targetId, ImageType imageType) {
         Image.validSize(file.getSize());
 
-        String[] path = fileService.storeFile(file, imageType);
+        String[] path = fileUtil.storeFile(file, imageType);
 
         Image image = Image.of(
                 file.getOriginalFilename(),

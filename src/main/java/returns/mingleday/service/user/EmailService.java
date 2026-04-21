@@ -1,22 +1,20 @@
 package returns.mingleday.service.user;
 
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.user.Email;
 import returns.mingleday.domain.user.Purpose;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.global.constant.MailMessageConstant;
 import returns.mingleday.repository.EmailRepository;
 import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.EmailExceptionCode;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
+import returns.mingleday.util.MailSender;
 import returns.mingleday.util.StringMasking;
 
 import java.util.Optional;
@@ -25,14 +23,14 @@ import java.util.Random;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class MailService {
+public class EmailService {
 
-    private final EmailRepository emailRepository;
-    private final JavaMailSender mailSender;
+    private final MailSender mailSender;
     private final UserRepository userRepository;
+    private final EmailRepository emailRepository;
 
     @Transactional
-    public void sendMail(String inputEmail, Purpose purpose) {
+    public void sendVerifyCode(String inputEmail, Purpose purpose) {
         String authCode = generateVerificationCode();
 
         Optional<User> user = userRepository.findByEmail(inputEmail);
@@ -44,29 +42,14 @@ public class MailService {
         Email email = Email.of(inputEmail, purpose, authCode);
         emailRepository.save(email);
 
-        try {
-            MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(inputEmail);
-            helper.setSubject("MingleDay 서비스 인증 코드입니다.");
+        String purposeText = switch (purpose) {
+            case REGISTER -> "회원가입을 위한 인증 코드입니다.";
+            case REISSUE -> "비밀번호 변경을 위한 인증 코드입니다.";
+            case WITHDRAWAL -> "회원탈퇴를 위한 인증 코드입니다.";
+            default -> "서비스 이용을 위한 인증 코드입니다.";
+        };
 
-            StringBuilder sb = new StringBuilder();
-            sb.append("인증 코드: ").append(authCode).append("\n");
-            switch (purpose) {
-                case REGISTER -> sb.append("회원가입을 위한 인증코드 6자리입니다.");
-                case REISSUE -> sb.append("비밀번호 변경을 위한 인증코드 6자리입니다.");
-                case WITHDRAWAL -> sb.append("회원탈퇴를 위한 인증코드 6자리입니다.");
-            }
-            sb.append("\n\n만약 본인이 발송한 인증 코드가 아니라면 현재 이메일로 문의 바랍니다.").append("\n");
-
-            helper.setText(sb.toString(), true);
-            mailSender.send(message);
-
-            log.info("Email send - email: {}, purpose: {}", StringMasking.emailMasking(email.getEmail()), purpose);
-        } catch (MessagingException e) {
-            log.error(e.getMessage(), e);
-            throw new BaseException(EmailExceptionCode.FAILED_TO_SEND_CODE);
-        }
+        mailSender.sendMail(email.getEmail(), MailMessageConstant.VERIFY_CODE_TITLE(), MailMessageConstant.VERIFY_CODE_CONTENT(purposeText, authCode), purpose);
     }
 
     @Transactional

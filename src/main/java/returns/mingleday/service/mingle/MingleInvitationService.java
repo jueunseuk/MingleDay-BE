@@ -8,12 +8,15 @@ import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.mingle.MingleInvitation;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.user.Email;
+import returns.mingleday.domain.user.Purpose;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.global.constant.MailMessageConstant;
 import returns.mingleday.model.mingle.MingleInvitationResponse;
 import returns.mingleday.repository.MingleInvitationRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.user.UserService;
+import returns.mingleday.util.MailSender;
 
 import java.util.List;
 
@@ -24,10 +27,23 @@ public class MingleInvitationService {
 
     private final MingleInvitationRepository mingleInvitationRepository;
     private final UserService userService;
+    private final MailSender mailSender;
 
     @Transactional
     public void createMingleInvitation(Mingle mingle, MingleMember mingleMember, String email) {
         Email.validEmail(email);
+
+        mailSender.sendMail(
+                email,
+                MailMessageConstant.INVITATION_TITLE(mingleMember.getDisplayName()),
+                MailMessageConstant.INVITATION_CONTENT(
+                        mingleMember.getDisplayName(),
+                        mingle.getName(),
+                        mingle.getDescription(),
+                        "URL 추가 예정"
+                ),
+                Purpose.INVITATION
+        );
 
         MingleInvitation mingleInvitation = MingleInvitation.of(mingle, mingleMember, email);
         mingleInvitationRepository.save(mingleInvitation);

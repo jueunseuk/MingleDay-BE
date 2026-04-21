@@ -13,7 +13,7 @@ import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
-import returns.mingleday.service.user.MailService;
+import returns.mingleday.service.user.EmailService;
 import returns.mingleday.util.StringMasking;
 
 import java.time.LocalDateTime;
@@ -25,7 +25,7 @@ public class ResetPasswordFlow {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final MailService mailService;
+    private final EmailService emailService;
 
     @Transactional
     public void resetPassword(String email, String password) {
@@ -36,7 +36,7 @@ public class ResetPasswordFlow {
             throw new BaseException(GlobalExceptionCode.INVALID_REQUEST);
         }
 
-        Email emailRequest = mailService.getLatestEmailRequest(email, Purpose.REISSUE);
+        Email emailRequest = emailService.getLatestEmailRequest(email, Purpose.REISSUE);
         if(emailRequest == null || !emailRequest.getIsVerified()) {
             log.warn("Request to change password for unauthenticated users - email: {}", email);
             throw new BaseException(UserExceptionCode.UNAUTHENTICATED_USER);

@@ -11,7 +11,7 @@ import returns.mingleday.model.auth.SignupRequest;
 import returns.mingleday.model.auth.TokenResponse;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
-import returns.mingleday.service.user.MailService;
+import returns.mingleday.service.user.EmailService;
 import returns.mingleday.service.user.UserService;
 import returns.mingleday.util.JwtTokenProvider;
 import returns.mingleday.util.StringMasking;
@@ -25,14 +25,14 @@ public class EmailSignupFlow {
 
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
-    private final MailService mailService;
+    private final EmailService emailService;
 
     @Transactional
     public TokenResponse emailSignup(SignupRequest signupRequest) {
         log.info("Signup Request Occurred - email: {}", signupRequest.getEmail());
 
         String email = signupRequest.getEmail();
-        Email emailRequest = mailService.getLatestEmailRequest(email, Purpose.REISSUE);
+        Email emailRequest = emailService.getLatestEmailRequest(email, Purpose.REISSUE);
         if(emailRequest == null || !emailRequest.getIsVerified()) {
             log.warn("Request to change password for unauthenticated users - email: {}", email);
             throw new BaseException(UserExceptionCode.UNAUTHENTICATED_USER);
