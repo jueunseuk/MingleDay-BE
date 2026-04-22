@@ -6,7 +6,6 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import returns.mingleday.flow.mingle.CreateMingleFlow;
-import returns.mingleday.flow.mingle.DeleteMingleFlow;
 import returns.mingleday.flow.mingle.UpdateMingleInfoFlow;
 import returns.mingleday.flow.mingle.UpdateMingleProfileFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
@@ -23,7 +22,6 @@ public class MingleController {
     private final CreateMingleFlow createMingleFlow;
     private final UpdateMingleInfoFlow updateMingleInfoFlow;
     private final UpdateMingleProfileFlow updateMingleProfileFlow;
-    private final DeleteMingleFlow deleteMingleFlow;
 
     @PostMapping
     public ResponseEntity<CreateMingleResponse> createMingle(@AuthenticationPrincipal AuthUserDetail user, @RequestBody CreateMingleRequest request) {
@@ -40,12 +38,6 @@ public class MingleController {
     @PatchMapping("/{mingleId}/profile")
     public ResponseEntity<SuccessResponse<String>> updateMingleProfile(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody MultipartFile request) {
         updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, request);
-        return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
-    }
-
-    @DeleteMapping("/{mingleId}")
-    public ResponseEntity<SuccessResponse<String>> deleteMingle(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
-        deleteMingleFlow.deleteMingle(user.getUserId(), mingleId);
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
     }
 }

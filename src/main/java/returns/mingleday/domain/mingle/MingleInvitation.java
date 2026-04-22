@@ -51,6 +51,7 @@ public class MingleInvitation extends BaseTime {
 
     public void accept() {
         this.responseType = ResponseType.ACCEPT;
+        this.mingle.increaseMemberCnt();
     }
 
     public void reject() {

@@ -25,4 +25,6 @@ public interface MingleMemberRepository extends JpaRepository<MingleMember, Long
     List<Mingle> findMingleByUser(User user);
 
     Boolean existsByMingleAndUser(Mingle mingle, User user);
+
+    void deleteAllByMingle(Mingle mingle);
 }

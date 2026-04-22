@@ -11,4 +11,5 @@ import java.util.List;
 public interface ScheduleInstanceRepository extends JpaRepository<ScheduleInstance, Long> {
     void deleteAllBySchedule(Schedule schedule);
     List<ScheduleInstance> findAllBySchedule(Schedule schedule);
+    void deleteAllByScheduleIn(List<Schedule> schedules);
 }

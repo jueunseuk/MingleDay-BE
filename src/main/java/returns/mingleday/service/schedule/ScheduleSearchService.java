@@ -37,11 +37,13 @@ public class ScheduleSearchService {
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 
-    public List<Schedule> findScheduleByMember(User user) {
+    public List<Schedule> findScheduleByOwner(User user) {
         return scheduleRepository.findAllByOwner(user);
     }
 
     public List<Schedule> findScheduleByMingle(Mingle mingle) {
         return scheduleRepository.findAlLByMingle(mingle);
     }
+
+
 }

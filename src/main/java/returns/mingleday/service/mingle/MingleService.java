@@ -1,22 +1,31 @@
 package returns.mingleday.service.mingle;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
 import returns.mingleday.model.mingle.CreateMingleRequest;
-import returns.mingleday.repository.MingleRepository;
+import returns.mingleday.repository.*;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
+import returns.mingleday.service.schedule.ScheduleSearchService;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Slf4j
 public class MingleService {
 
     private final MingleRepository mingleRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final MingleLogRepository mingleLogRepository;
+    private final ScheduleSearchService scheduleSearchService;
+    private final MingleMemberRepository mingleMemberRepository;
+    private final ScheduleMemberRepository scheduleMemberRepository;
+    private final ScheduleInstanceRepository scheduleInstanceRepository;
+    private final ScheduleRecurrenceRepository scheduleRecurrenceRepository;
 
     @Transactional
     public Mingle createMingle(User user, CreateMingleRequest request) {
@@ -49,5 +58,23 @@ public class MingleService {
                 usePermission,
                 useRealname
         );
+    }
+
+    @Transactional
+    public void deleteMingleWithAllData(Mingle mingle) {
+        List<Schedule> schedules = scheduleSearchService.findScheduleByMingle(mingle);
+
+        if(!schedules.isEmpty()) {
+            scheduleInstanceRepository.deleteAllByScheduleIn(schedules);
+            scheduleMemberRepository.deleteAllByScheduleIn(schedules);
+            scheduleRecurrenceRepository.deleteAllByScheduleIn(schedules);
+
+            scheduleRepository.deleteAllInBatch(schedules);
+        }
+
+        mingleMemberRepository.deleteAllByMingle(mingle);
+        mingleLogRepository.deleteAllByMingle(mingle);
+
+        mingleRepository.delete(mingle);
     }
 }

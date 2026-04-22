@@ -26,7 +26,6 @@ import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.user.UserService;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -133,19 +132,8 @@ public class ScheduleService {
         );
     }
 
-    public void deleteAllBySchedule(Schedule schedule) {
-        List<ScheduleInstance> instances = scheduleInstanceRepository.findAllBySchedule(schedule);
-
-        for (ScheduleInstance instance : instances) {
-            instance.linking(null, null);
-        }
-
-        scheduleInstanceRepository.flush();
-        scheduleInstanceRepository.deleteAllBySchedule(schedule);
-    }
-
     public void deleteSchedule(Schedule schedule) {
         scheduleRepository.delete(schedule);
-        log.info("delete all schedule instance: scheduleId {}", schedule.getScheduleId());
+        log.info("delete schedule instance: scheduleId {}", schedule.getScheduleId());
     }
 }

@@ -9,13 +9,13 @@ import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.repository.*;
+import returns.mingleday.response.code.MingleMemberExceptionCode;
+import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.mingle.log.CreateMingleLogService;
-import returns.mingleday.service.schedule.ScheduleMemberService;
-import returns.mingleday.service.schedule.ScheduleRecurrenceService;
 import returns.mingleday.service.schedule.ScheduleSearchService;
-import returns.mingleday.service.schedule.ScheduleService;
 import returns.mingleday.service.user.UserService;
 
 import java.util.List;
@@ -27,12 +27,14 @@ public class LeaveMingleMemberFlow {
 
     private final UserService userService;
     private final MingleService mingleService;
-    private final ScheduleService scheduleService;
+    private final ScheduleRepository scheduleRepository;
     private final MingleMemberService mingleMemberService;
-    private final ScheduleMemberService scheduleMemberService;
     private final ScheduleSearchService scheduleSearchService;
     private final CreateMingleLogService createMingleLogService;
-    private final ScheduleRecurrenceService scheduleRecurrenceService;
+    private final MingleMemberRepository mingleMemberRepository;
+    private final ScheduleMemberRepository scheduleMemberRepository;
+    private final ScheduleInstanceRepository scheduleInstanceRepository;
+    private final ScheduleRecurrenceRepository scheduleRecurrenceRepository;
 
     @Transactional
     public void leaveMingleMember(Integer userId, Integer mingleId) {
@@ -40,14 +42,25 @@ public class LeaveMingleMemberFlow {
         Mingle mingle = mingleService.findMingleById(mingleId);
         MingleMember me = mingleMemberService.getMingleMember(mingle, user);
 
-        List<Schedule> schedules = scheduleSearchService.findScheduleByMember(user);
-        for(Schedule schedule : schedules) {
-            scheduleRecurrenceService.deleteAllBySchedule(schedule);
-            scheduleMemberService.deleteAllBySchedule(schedule);
-            scheduleService.deleteAllBySchedule(schedule);
-            scheduleService.deleteSchedule(schedule);
+        if(mingle.getMemberCnt() > 1 && mingle.getOwner().equals(user)) {
+            throw new BaseException(MingleMemberExceptionCode.OWNER_CANNOT_LEAVE);
         }
-        createMingleLogService.execute(mingle, me, null, MingleLogType.LEAVE);
-        log.info("Leave mingle member - executorId: {}", userId);
+
+        if(mingle.getMemberCnt() > 1) {
+            List<Schedule> schedules = scheduleSearchService.findScheduleByOwner(user);
+            scheduleInstanceRepository.deleteAllByScheduleIn(schedules);
+            scheduleMemberRepository.deleteAllByScheduleIn(schedules);
+            scheduleMemberRepository.deleteAllByMingleMember(me);
+            scheduleRecurrenceRepository.deleteAllByScheduleIn(schedules);
+            scheduleRepository.deleteAllInBatch(schedules);
+
+            mingleMemberRepository.delete(me);
+            mingle.decreaseMemberCnt();
+            createMingleLogService.execute(mingle, me, null, MingleLogType.LEAVE);
+        } else {
+            mingleService.deleteMingleWithAllData(mingle);
+        }
+
+        log.info("Leave mingle - executorId: {}", userId);
     }
 }

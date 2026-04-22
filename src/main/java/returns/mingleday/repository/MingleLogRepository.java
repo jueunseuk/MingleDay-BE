@@ -12,4 +12,6 @@ import java.util.List;
 public interface MingleLogRepository extends JpaRepository<MingleLog, Long> {
     List<MingleLog> findAllByMingle(Mingle mingle, Pageable pageable);
     List<MingleLog> findAllByMingleIn(List<Mingle> mingles, Pageable pageable);
+
+    void deleteAllByMingle(Mingle mingle);
 }
