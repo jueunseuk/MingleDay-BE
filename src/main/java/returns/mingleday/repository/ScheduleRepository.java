@@ -16,6 +16,4 @@ public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
     List<Schedule> findAllByOwner(User user);
 
     List<Schedule> findAlLByMingle(Mingle mingle);
-
-    void deleteAllIn(List<Schedule> schedules);
 }

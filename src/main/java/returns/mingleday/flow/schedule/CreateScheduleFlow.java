@@ -19,7 +19,6 @@ import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.mingle.log.CreateMingleLogService;
-import returns.mingleday.service.mingle.log.strategy.CreateLogStrategy;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleRecurrenceService;
 import returns.mingleday.service.schedule.ScheduleService;
@@ -43,12 +42,11 @@ public class CreateScheduleFlow {
     private final ScheduleService scheduleService;
     private final MingleMemberService mingleMemberService;
     private final ScheduleMemberService scheduleMemberService;
+    private final CreateMingleLogService createMingleLogService;
     private final MinglePermissionService minglePermissionService;
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleRecurrenceService scheduleRecurrenceService;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
-    private final CreateLogStrategy createLogStrategy;
-    private final CreateMingleLogService createMingleLogService;
 
     @Transactional
     public DetailScheduleResponse createSchedule(Integer userId, Integer mingleId, CreateScheduleRequest request) {
@@ -71,7 +69,7 @@ public class CreateScheduleFlow {
         // 스케줄 해당 멤버 등록
         List<ScheduleMember> scheduleMembers = new ArrayList<>();
         for (ScheduleMemberRequest member : request.getMingleMembers()) {
-            MingleMember m = mingleMemberService.getMingleMember(member.getScheduleMemberId());
+            MingleMember m = mingleMemberService.getMingleMember(member.getMingleMemberId());
             scheduleMembers.add(scheduleMemberService.createScheduleMember(schedule, m, member.getMemo()));
         }
         scheduleMemberRepository.saveAll(scheduleMembers);

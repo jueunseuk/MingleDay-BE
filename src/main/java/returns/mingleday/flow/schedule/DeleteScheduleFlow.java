@@ -10,6 +10,7 @@ import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.repository.ScheduleInstanceRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
@@ -36,6 +37,7 @@ public class DeleteScheduleFlow {
     private final CreateMingleLogService createMingleLogService;
     private final MinglePermissionService minglePermissionService;
     private final ScheduleRecurrenceService scheduleRecurrenceService;
+    private final ScheduleInstanceRepository scheduleInstanceRepository;
 
     @Transactional
     public void deleteSchedule(Integer userId, Integer mingleId, Long scheduleId) {
@@ -54,7 +56,7 @@ public class DeleteScheduleFlow {
 
         scheduleRecurrenceService.deleteAllBySchedule(schedule);
         scheduleMemberService.deleteAllBySchedule(schedule);
-        scheduleService.deleteAllBySchedule(schedule);
+        scheduleInstanceRepository.deleteAllBySchedule(schedule);
 
         scheduleService.deleteSchedule(schedule);
 
