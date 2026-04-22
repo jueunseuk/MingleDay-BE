@@ -94,6 +94,11 @@ public class CreateScheduleFlow {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
 
+            if (request.getIsAllDay()) {
+                start = start.toLocalDate().atStartOfDay();
+                end = start.toLocalDate().atTime(23, 59, 0);
+            }
+
             // 인스턴스 반복 생성
             List<ScheduleInstance> scheduleInstances = new ArrayList<>();
             if(scheduleRecurrence.getRepeatType() == RepeatType.INTERVAL || scheduleRecurrence.getRepeatType() == RepeatType.DAILY) {
@@ -184,11 +189,16 @@ public class CreateScheduleFlow {
             } else {
                 scheduleInstance2 = null;
             }
-        } else {
+        } else { // isRepeated is false
             LocalDateTime start = request.getStartAt();
             LocalDateTime end = request.getEndAt();
             if(start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
+            }
+
+            if (request.getIsAllDay()) {
+                start = start.toLocalDate().atStartOfDay();
+                end = start.toLocalDate().atTime(23, 59, 0);
             }
 
             scheduleInstance = scheduleService.createSolidScheduleInstance(schedule, start, end);

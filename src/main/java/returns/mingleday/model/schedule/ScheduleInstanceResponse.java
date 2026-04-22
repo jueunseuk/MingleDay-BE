@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Data
 public class ScheduleInstanceResponse {
     // 특정 날짜의 일정 인스턴스를 볼 때 보여줄 자세한 값
+    // 스케줄과 함께 항상 하단에서 보여줌
     private Long scheduleInstanceId;
     private LocalDateTime startAt;
     private LocalDateTime endAt;

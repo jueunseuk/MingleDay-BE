@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/schedules/{scheduleId}/recurrences")
+@RequestMapping("/api/v1/mingle/{mingleId}/schedules/{scheduleId}/recurrences")
 public class ScheduleRecurrenceController {
 
 }

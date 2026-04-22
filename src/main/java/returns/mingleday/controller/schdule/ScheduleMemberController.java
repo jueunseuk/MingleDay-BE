@@ -13,7 +13,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/v1/schedules/{scheduleId}/members")
+@RequestMapping("/api/v1/mingles/{mingleId}/schedules/{scheduleId}/members")
 public class ScheduleMemberController {
 
     private final UpdateScheduleMemberFlow updateScheduleMemberFlow;

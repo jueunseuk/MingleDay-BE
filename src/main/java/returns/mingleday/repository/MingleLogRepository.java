@@ -10,8 +10,9 @@ import java.util.List;
 
 @Repository
 public interface MingleLogRepository extends JpaRepository<MingleLog, Long> {
-    List<MingleLog> findAllByMingle(Mingle mingle, Pageable pageable);
-    List<MingleLog> findAllByMingleIn(List<Mingle> mingles, Pageable pageable);
-
     void deleteAllByMingle(Mingle mingle);
+
+    List<MingleLog> findAllByMingleInOrderByCreatedAt(List<Mingle> mingles, Pageable createdAt);
+
+    List<MingleLog> findAllByMingleOrderByCreatedAt(Mingle mingle, Pageable createdAt);
 }

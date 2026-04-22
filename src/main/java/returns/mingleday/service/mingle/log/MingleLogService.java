@@ -21,16 +21,16 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MingleLogService {
 
-    private final MingleLogRepository mingleLogRepository;
     private final UserService userService;
-    private final MingleMemberService mingleMemberService;
     private final MingleService mingleService;
+    private final MingleMemberService mingleMemberService;
+    private final MingleLogRepository mingleLogRepository;
 
     public List<MyMingleLogResponse> getAllMyMingleLog(Integer userId) {
         User user = userService.findUserByUserId(userId);
 
         List<Mingle> mingles = mingleMemberService.getAllMingle(user);
-        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleIn(mingles, PageableMaker.of("createdAt"));
+        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleInOrderByCreatedAt(mingles, PageableMaker.of("createdAt"));
 
         return mingleLogs.stream().map(MyMingleLogResponse::new).toList();
     }
@@ -43,7 +43,7 @@ public class MingleLogService {
             throw new BaseException(GlobalExceptionCode.FORBIDDEN);
         }
 
-        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingle(mingle, PageableMaker.of("createdAt"));
+        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleOrderByCreatedAt(mingle, PageableMaker.of("createdAt"));
 
         return mingleLogs.stream().map(MingleLogResponse::new).toList();
     }
