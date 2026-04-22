@@ -10,7 +10,6 @@ import returns.mingleday.model.mingle.CreateMingleRequest;
 import returns.mingleday.repository.*;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
-import returns.mingleday.service.schedule.ScheduleSearchService;
 
 import java.util.List;
 
@@ -21,7 +20,6 @@ public class MingleService {
     private final MingleRepository mingleRepository;
     private final ScheduleRepository scheduleRepository;
     private final MingleLogRepository mingleLogRepository;
-    private final ScheduleSearchService scheduleSearchService;
     private final MingleMemberRepository mingleMemberRepository;
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
@@ -62,7 +60,7 @@ public class MingleService {
 
     @Transactional
     public void deleteMingleWithAllData(Mingle mingle) {
-        List<Schedule> schedules = scheduleSearchService.findScheduleByMingle(mingle);
+        List<Schedule> schedules = scheduleRepository.findAlLByMingle(mingle);
 
         if(!schedules.isEmpty()) {
             scheduleInstanceRepository.deleteAllByScheduleIn(schedules);

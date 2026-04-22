@@ -31,8 +31,8 @@ public class ScheduleSearchService {
     private final MingleService mingleService;
     private final ScheduleRepository scheduleRepository;
     private final MingleMemberService mingleMemberService;
-    private final ScheduleInstanceRepository scheduleInstanceRepository;
     private final ScheduleMemberService scheduleMemberService;
+    private final ScheduleInstanceRepository scheduleInstanceRepository;
 
     public List<Schedule> findScheduleByCategory(Category category) {
         return scheduleRepository.findAllByCategory(category);
@@ -50,10 +50,6 @@ public class ScheduleSearchService {
 
     public List<Schedule> findScheduleByOwner(User user) {
         return scheduleRepository.findAllByOwner(user);
-    }
-
-    public List<Schedule> findScheduleByMingle(Mingle mingle) {
-        return scheduleRepository.findAlLByMingle(mingle);
     }
 
     public List<MonthlyScheduleResponse> findMonthlySchedules(Integer userId, Integer mingleId, Integer year, Integer month) {
@@ -89,6 +85,24 @@ public class ScheduleSearchService {
                         new SimpleScheduleInstanceResponse(si)
                 )
         ).toList();
+    }
+
+    public List<MonthlyScheduleResponse> findMySchedules(Integer userId, Integer year, Integer month, String keyword) {
+        User user = userService.findUserByUserId(userId);
+        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
+        LocalDateTime end = LocalDate.of(year, month, 1).atTime(23, 59, 0);
+
+        List<ScheduleInstance> scheduleInstances;
+        if(keyword == null || keyword.isEmpty()) {
+            scheduleInstances = scheduleInstanceRepository.findAllByUserAndMonth(user, start, end);
+        } else {
+            scheduleInstances = scheduleInstanceRepository.findAllByUserAndMonthAndTitle(user, start, end, keyword);
+        }
+
+        return scheduleInstances.stream().map(si -> new MonthlyScheduleResponse(
+                si.getSchedule(),
+                new SimpleScheduleInstanceResponse(si)
+        )).toList();
     }
 
     public DetailScheduleResponse getDetailSchedules(Integer userId, Integer mingleId, Long scheduleInstanceId) {
