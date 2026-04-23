@@ -32,7 +32,7 @@ public interface ScheduleInstanceRepository extends JpaRepository<ScheduleInstan
             "JOIN ScheduleMember sm ON sm.schedule = s " +
             "WHERE sm.mingleMember.user = :user " +
             "AND (si.startAt <= :end AND si.endAt >= :start) " +
-            "AND s.title LIKE %:keyword% " +
+            "AND s.title LIKE %:title% " +
             "ORDER BY si.startAt ASC")
     List<ScheduleInstance> findAllByUserAndMonthAndTitle(User user, LocalDateTime start, LocalDateTime end, String title);
 }
