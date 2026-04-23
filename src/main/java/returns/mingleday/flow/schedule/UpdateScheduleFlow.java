@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.Schedule;
@@ -18,6 +19,7 @@ import returns.mingleday.service.category.CategoryService;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.schedule.ScheduleService;
@@ -35,9 +37,10 @@ public class UpdateScheduleFlow {
     private final CategoryService categoryService;
     private final ScheduleService scheduleService;
     private final MingleMemberService mingleMemberService;
-    private final MinglePermissionService minglePermissionService;
     private final ScheduleMemberService scheduleMemberService;
     private final ScheduleSearchService scheduleSearchService;
+    private final CreateMingleLogService createMingleLogService;
+    private final MinglePermissionService minglePermissionService;
 
     @Transactional
     public DetailScheduleResponse updateSchedule(Integer userId, Integer mingleId, Long scheduleId, UpdateScheduleRequest request) {
@@ -69,6 +72,7 @@ public class UpdateScheduleFlow {
         List<ScheduleMember> scheduleMembers = scheduleMemberService.findScheduleMemberBySchedule(schedule);
         List<ScheduleMemberResponse> scheduleMemberResponses = scheduleMembers.stream().map(ScheduleMemberResponse::new).toList();
 
+        createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.MODIFY);
         log.info("Update Schedule Instance - userId: {}, scheduleId: {}", userId, scheduleId);
         return new DetailScheduleResponse(
                 schedule,

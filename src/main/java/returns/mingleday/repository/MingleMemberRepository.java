@@ -13,7 +13,6 @@ import java.util.Optional;
 @Repository
 public interface MingleMemberRepository extends JpaRepository<MingleMember, Long> {
     Optional<MingleMember> findByMingleAndUser(Mingle mingle, User user);
-    List<MingleMember> findAllByMingle(Mingle mingle);
 
     @Query("SELECT m.mingle FROM MingleMember m " +
             "WHERE m.user.userId = :otherId " +
@@ -25,4 +24,8 @@ public interface MingleMemberRepository extends JpaRepository<MingleMember, Long
     List<Mingle> findMingleByUser(User user);
 
     Boolean existsByMingleAndUser(Mingle mingle, User user);
+
+    void deleteAllByMingle(Mingle mingle);
+
+    List<MingleMember> findAllByMingleOrderByCreatedAt(Mingle mingle);
 }

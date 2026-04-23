@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.Schedule;
@@ -17,6 +18,7 @@ import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.schedule.ScheduleService;
@@ -36,6 +38,7 @@ public class UpdateScheduleInstanceFlow {
     private final ScheduleMemberService scheduleMemberService;
     private final ScheduleSearchService scheduleSearchService;
     private final MinglePermissionService minglePermissionService;
+    private final CreateMingleLogService createMingleLogService;
 
     @Transactional
     public DetailScheduleResponse updateScheduleInstance(Integer userId, Integer mingleId, Long scheduleId, Long scheduleInstanceId, UpdateScheduleInstanceRequest request) {
@@ -67,6 +70,7 @@ public class UpdateScheduleInstanceFlow {
         List<ScheduleMember> scheduleMembers = scheduleMemberService.findScheduleMemberBySchedule(schedule);
         List<ScheduleMemberResponse> scheduleMemberResponses = scheduleMembers.stream().map(ScheduleMemberResponse::new).toList();
 
+        createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.MODIFY);
         log.info("Update Schedule Instance - userId: {}, scheduleId: {}, scheduleInstanceId: {}", userId, scheduleId, scheduleInstanceId);
         return new DetailScheduleResponse(
                 schedule,

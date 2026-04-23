@@ -20,6 +20,7 @@ public class CreateScheduleRequest {
     private Boolean isRepeated;
     private Boolean isLocked;
     private Boolean isPrivate;
+    private Boolean isAllDay;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
     private List<ScheduleMemberRequest> mingleMembers;

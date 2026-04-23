@@ -33,6 +33,6 @@ public class ScheduleMemberService {
 
     public void deleteAllBySchedule(Schedule schedule) {
         scheduleMemberRepository.deleteAllBySchedule(schedule);
-        log.info("delete all schedule member");
+        log.info("delete all schedule member - scheduleId: {}", schedule.getScheduleId());
     }
 }

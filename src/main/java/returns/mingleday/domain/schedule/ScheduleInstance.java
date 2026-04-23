@@ -6,8 +6,11 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import returns.mingleday.global.domain.BaseTime;
+import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.exception.BaseException;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Builder
@@ -47,6 +50,11 @@ public class ScheduleInstance extends BaseTime {
     private ScheduleInstance nextScheduleInstance;
 
     public static ScheduleInstance of(Schedule schedule, LocalDateTime startAt, LocalDateTime endAt, String memo) {
+        long daysBetween = ChronoUnit.DAYS.between(startAt, endAt);
+        if (daysBetween > 100) {
+            throw new BaseException(GlobalExceptionCode.INVALID_REQUEST);
+        }
+
         return ScheduleInstance.builder()
                 .schedule(schedule)
                 .startAt(startAt)

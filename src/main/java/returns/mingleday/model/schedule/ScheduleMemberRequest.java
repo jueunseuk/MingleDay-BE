@@ -6,6 +6,6 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ScheduleMemberRequest {
-    private Long scheduleMemberId;
+    private Long mingleMemberId;
     private String memo;
 }

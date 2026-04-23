@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
+import returns.mingleday.domain.mingle.MingleLogType;
 import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.*;
@@ -17,6 +18,7 @@ import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
+import returns.mingleday.service.mingle.log.CreateMingleLogService;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleRecurrenceService;
 import returns.mingleday.service.schedule.ScheduleService;
@@ -40,6 +42,7 @@ public class CreateScheduleFlow {
     private final ScheduleService scheduleService;
     private final MingleMemberService mingleMemberService;
     private final ScheduleMemberService scheduleMemberService;
+    private final CreateMingleLogService createMingleLogService;
     private final MinglePermissionService minglePermissionService;
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleRecurrenceService scheduleRecurrenceService;
@@ -66,7 +69,7 @@ public class CreateScheduleFlow {
         // 스케줄 해당 멤버 등록
         List<ScheduleMember> scheduleMembers = new ArrayList<>();
         for (ScheduleMemberRequest member : request.getMingleMembers()) {
-            MingleMember m = mingleMemberService.getMingleMember(member.getScheduleMemberId());
+            MingleMember m = mingleMemberService.getMingleMember(member.getMingleMemberId());
             scheduleMembers.add(scheduleMemberService.createScheduleMember(schedule, m, member.getMemo()));
         }
         scheduleMemberRepository.saveAll(scheduleMembers);
@@ -89,6 +92,11 @@ public class CreateScheduleFlow {
             }
             if(start.getDayOfYear() != end.getDayOfYear()) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
+            }
+
+            if (request.getIsAllDay()) {
+                start = start.toLocalDate().atStartOfDay();
+                end = start.toLocalDate().atTime(23, 59, 0);
             }
 
             // 인스턴스 반복 생성
@@ -181,17 +189,23 @@ public class CreateScheduleFlow {
             } else {
                 scheduleInstance2 = null;
             }
-        } else {
+        } else { // isRepeated is false
             LocalDateTime start = request.getStartAt();
             LocalDateTime end = request.getEndAt();
             if(start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
 
+            if (request.getIsAllDay()) {
+                start = start.toLocalDate().atStartOfDay();
+                end = start.toLocalDate().atTime(23, 59, 0);
+            }
+
             scheduleInstance = scheduleService.createSolidScheduleInstance(schedule, start, end);
             scheduleInstance2 = null;
         }
 
+        createMingleLogService.execute(mingle, mingleMember, schedule, MingleLogType.CREATE);
         log.info("Create schedule - userId: {}, scheduleId: {}", userId, schedule.getScheduleId());
         return new DetailScheduleResponse(
                 schedule,

@@ -11,6 +11,7 @@ public class ScheduleMemberResponse {
     private String memo;
 
     public ScheduleMemberResponse(ScheduleMember scheduleMember) {
+        if(scheduleMember == null) return;
         this.scheduleMemberId = scheduleMember.getScheduleMemberId();
         this.name = scheduleMember.getMingleMember().getDisplayName();
         this.memo = scheduleMember.getMemo();

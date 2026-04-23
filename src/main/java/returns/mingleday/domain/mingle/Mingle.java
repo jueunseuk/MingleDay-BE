@@ -46,6 +46,9 @@ public class Mingle extends BaseTime {
     @Column(name = "mingle_type")
     private MingleType mingleType;
 
+    @Column(name = "member_cnt")
+    private Integer memberCnt;
+
     public static Mingle of(User owner, String name, String description, String profileUrl, Boolean usePermission, Boolean useRealname, MingleType mingleType) {
         isValidName(name);
 
@@ -57,6 +60,7 @@ public class Mingle extends BaseTime {
                 .usePermission(usePermission != null && usePermission)
                 .useRealname(useRealname != null && useRealname)
                 .mingleType(mingleType)
+                .memberCnt(1)
                 .build();
     }
 
@@ -82,5 +86,13 @@ public class Mingle extends BaseTime {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
         }
+    }
+
+    public void increaseMemberCnt() {
+        this.memberCnt++;
+    }
+
+    public void decreaseMemberCnt() {
+        this.memberCnt = Math.max(1, this.memberCnt - 1);
     }
 }
