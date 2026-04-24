@@ -1,6 +1,7 @@
 package returns.mingleday.domain.mingle;
 
 public enum MingleType {
+    COMMON,
     FAMILY,
     FRIEND,
     LOVER,
