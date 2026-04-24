@@ -2,13 +2,15 @@ package returns.mingleday.controller.test;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import returns.mingleday.global.authentication.AuthUserDetail;
+import returns.mingleday.model.user.SimpleUserResponse;
+import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.exception.BaseException;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +24,10 @@ public class TestController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal AuthUserDetail user) {
+    public ResponseEntity<SimpleUserResponse> whoAmI(@AuthenticationPrincipal AuthUserDetail user) {
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated user");
+            throw new BaseException(GlobalExceptionCode.UNAUTHORIZED);
         }
-        return ResponseEntity.ok(user);
+        return ResponseEntity.ok(new SimpleUserResponse(user.getUserId()));
     }
 }
