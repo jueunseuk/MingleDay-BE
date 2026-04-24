@@ -5,10 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import returns.mingleday.global.authentication.AuthUserDetail;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,10 +22,10 @@ public class TestController {
     }
 
     @GetMapping("/me")
-    public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal UserDetails userDetails) {
-        if (userDetails == null) {
+    public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal AuthUserDetail user) {
+        if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Not authenticated user");
         }
-        return ResponseEntity.ok(userDetails);
+        return ResponseEntity.ok(user);
     }
 }
