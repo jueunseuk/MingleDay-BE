@@ -15,7 +15,7 @@ public enum GlobalExceptionCode implements ExceptionCode {
     INVALID_REQUEST("GLOBAL_005", "유효하지 않은 요청입니다.", HttpStatus.BAD_REQUEST),
     EXPIRED_REQUEST("GLOBAL_006", "이미 만료된 요청입니다.", HttpStatus.BAD_REQUEST),
     BAD_REQUEST_FOR_MISMATCH("GLOBAL_007", "요청 본문의 ID와 경로의 ID가 일치하지 않습니다.", HttpStatus.BAD_REQUEST),
-    ;
+    UNAUTHORIZED("GLOBAL_008", "인증되지 않은 사용자입니다.", HttpStatus.UNAUTHORIZED);
 
     private final String code;
     private final String message;
