@@ -27,7 +27,7 @@ public class UserService {
         String encodedPassword = passwordEncoder.encode(password);
 
         User user = User.of(
-                name, email, encodedPassword, nickname
+                name, email, encodedPassword, nickname == null || nickname.isEmpty() ? name : nickname
         );
 
         return userRepository.save(user);
