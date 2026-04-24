@@ -175,15 +175,15 @@ public class CreateScheduleFlow {
                 for (int i = 1; i < scheduleInstances.size() - 1; i++) {
                     scheduleInstances.get(i).linking(scheduleInstances.get(i - 1), scheduleInstances.get(i + 1));
                 }
-                scheduleInstances.getLast().linking(scheduleInstances.get(scheduleInstances.size() - 2), null);
+                scheduleInstances.get(scheduleInstances.size()-1).linking(scheduleInstances.get(scheduleInstances.size() - 2), null);
             } else {
-                scheduleInstances.getFirst().linking(null, null);
+                scheduleInstances.get(0).linking(null, null);
             }
 
             scheduleInstanceRepository.saveAll(scheduleInstances);
 
             // 반환용 인스턴스
-            scheduleInstance = scheduleInstances.getFirst();
+            scheduleInstance = scheduleInstances.get(0);
             if(scheduleInstances.size() > 1) {
                 scheduleInstance2 = scheduleInstances.get(1);
             } else {
