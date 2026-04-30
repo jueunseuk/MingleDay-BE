@@ -14,6 +14,7 @@ import returns.mingleday.model.schedule.*;
 import returns.mingleday.repository.ScheduleInstanceRepository;
 import returns.mingleday.repository.ScheduleMemberRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.code.ScheduleExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
@@ -26,6 +27,7 @@ import returns.mingleday.service.user.UserService;
 
 import java.time.DayOfWeek;
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
@@ -85,6 +87,9 @@ public class CreateScheduleFlow {
             if (start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
+            if(start.getDayOfYear() != end.getDayOfYear() && start.getYear() != end.getYear()) {
+                throw new BaseException(ScheduleExceptionCode.ALLOWED_ONLY_SAMEDAY);
+            }
 
             if (request.getIsAllDay()) {
                 start = start.toLocalDate().atStartOfDay();
@@ -94,10 +99,10 @@ public class CreateScheduleFlow {
             // 인스턴스 반복 생성
             List<ScheduleInstance> scheduleInstances = new ArrayList<>();
             if (scheduleRecurrence.getRepeatType() == RepeatType.INTERVAL || scheduleRecurrence.getRepeatType() == RepeatType.DAILY) {
-                int interval = (scheduleRecurrence.getRepeatType() == RepeatType.DAILY) ? 1
-                        : Integer.parseInt(scheduleRecurrence.getRepeatValue());
+                int interval = (scheduleRecurrence.getRepeatType() == RepeatType.DAILY) ? 1 : Integer.parseInt(scheduleRecurrence.getRepeatValue());
+
                 if (scheduleRecurrence.getEndType() == EndType.COUNT) {
-                    int cnt = Integer.parseInt(scheduleRecurrence.getEndValue());
+                    int cnt = Math.min(Integer.parseInt(scheduleRecurrence.getEndValue()), 100);
                     for (int i = 0; i < cnt; i++) {
                         scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, start, end));
                         start = start.plusDays(interval);
@@ -105,10 +110,12 @@ public class CreateScheduleFlow {
                     }
                 } else {
                     LocalDateTime limit = LocalDateTime.parse(scheduleRecurrence.getEndValue());
-                    while (start.isBefore(limit)) {
+                    int cnt = 0;
+                    while (cnt < 100 && start.isBefore(limit)) {
                         scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, start, end));
                         start = start.plusDays(interval);
                         end = end.plusDays(interval);
+                        cnt++;
                     }
                 }
             } else if (scheduleRecurrence.getRepeatType() == RepeatType.WEEKLY) {
@@ -120,32 +127,51 @@ public class CreateScheduleFlow {
                         .sorted()
                         .toList();
 
-                int max = (scheduleRecurrence.getEndType() == EndType.COUNT) ? Integer.parseInt(scheduleRecurrence.getEndValue()) : Integer.MAX_VALUE;
-                LocalDateTime limit = (scheduleRecurrence.getEndType() == EndType.DATE) ? LocalDateTime.parse(scheduleRecurrence.getEndValue()) : LocalDateTime.MAX;
+                LocalDateTime limit = scheduleRecurrence.getEndType() == EndType.DATE
+                        ? LocalDateTime.parse(scheduleRecurrence.getEndValue())
+                        : LocalDateTime.MAX;
+
+                int max = scheduleRecurrence.getEndType() == EndType.COUNT
+                        ? Math.min(Integer.parseInt(scheduleRecurrence.getEndValue()), 100)
+                        : 100;
+
+                Duration duration = Duration.between(start, end);
+                LocalDate weekStartDate = start.toLocalDate()
+                        .with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
 
                 int cnt = 0;
-                LocalDateTime current = start;
-                Duration duration = Duration.between(start, end);
 
-                while (cnt < max && !current.isAfter(limit)) {
-                    for (DayOfWeek day : targetDays) {
-                        LocalDateTime nextOccurrence = current.with(TemporalAdjusters.nextOrSame(day));
+                while (cnt < max) {
+                    for (DayOfWeek target : targetDays) {
+                        LocalDate candidateDate = weekStartDate.with(TemporalAdjusters.nextOrSame(target));
+                        LocalDateTime candidateStart = LocalDateTime.of(candidateDate, start.toLocalTime());
 
-                        if (nextOccurrence.isBefore(start)) continue;
+                        if (candidateStart.isBefore(start)) {
+                            continue;
+                        }
 
-                        if (nextOccurrence.isAfter(limit)) {
+                        if (candidateStart.isAfter(limit)) {
                             cnt = max;
                             break;
                         }
 
-                        scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, nextOccurrence, nextOccurrence.plus(duration)));
+                        LocalDateTime candidateEnd = candidateStart.plus(duration);
 
-                        if (++cnt >= max) break;
+                        scheduleInstances.add(
+                                scheduleService.createRecurrenceScheduleInstance(schedule, candidateStart, candidateEnd)
+                        );
+
+                        cnt++;
+
+                        if (cnt >= max) {
+                            break;
+                        }
                     }
-                    current = current.plusWeeks(1).with(DayOfWeek.MONDAY).withHour(0).withMinute(0);
+
+                    weekStartDate = weekStartDate.plusWeeks(1);
                 }
             } else if (scheduleRecurrence.getRepeatType() == RepeatType.MONTHLY) {
-                int max = (scheduleRecurrence.getEndType() == EndType.COUNT) ? Integer.parseInt(scheduleRecurrence.getEndValue()) : Integer.MAX_VALUE;
+                int max = scheduleRecurrence.getEndType() == EndType.COUNT ? Math.min(Integer.parseInt(scheduleRecurrence.getEndValue()), 100) : 100;
                 LocalDateTime limit = (scheduleRecurrence.getEndType() == EndType.DATE) ? LocalDateTime.parse(scheduleRecurrence.getEndValue()) : LocalDateTime.MAX;
 
                 int cnt = 0;
@@ -243,7 +269,6 @@ public class CreateScheduleFlow {
 
 
         }
-
 
         /*
         * 우선 일정은 단순 일정과 반복 일정으로 나뉨
