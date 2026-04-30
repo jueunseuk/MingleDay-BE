@@ -52,14 +52,14 @@ public class CreateScheduleFlow {
     public DetailScheduleResponse createSchedule(Integer userId, Integer mingleId, CreateScheduleRequest request) {
         User user = userService.findUserByUserId(userId);
 
-        if(!request.getMingleId().equals(mingleId)) {
+        if (!request.getMingleId().equals(mingleId)) {
             throw new BaseException(GlobalExceptionCode.FORBIDDEN);
         }
         Mingle mingle = mingleService.findMingleById(mingleId);
 
         // 등록 권한 확인
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
-        if(mingle.getUsePermission() && !minglePermissionService.doesMemberHavePermission(mingleMember, PermissionType.CREATE)) {
+        if (mingle.getUsePermission() && !minglePermissionService.doesMemberHavePermission(mingleMember, PermissionType.CREATE)) {
             throw new BaseException(GlobalExceptionCode.FORBIDDEN);
         }
 
@@ -79,7 +79,7 @@ public class CreateScheduleFlow {
 
         // 스케줄 인스턴스 생성
         ScheduleInstance scheduleInstance, scheduleInstance2;
-        if(schedule.getIsRepeated()) {
+        if (schedule.getIsRepeated()) {
             // Recurrence부터 생성
             ScheduleRecurrence scheduleRecurrence = scheduleRecurrenceService.createScheduleRecurrence(
                     schedule, request.getRepeatType(), request.getRepeatValue(), request.getEndType(), request.getEndValue()
@@ -87,10 +87,10 @@ public class CreateScheduleFlow {
 
             LocalDateTime start = request.getStartAt();
             LocalDateTime end = request.getEndAt();
-            if(start.isAfter(end)) {
+            if (start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
-            if(start.getDayOfYear() != end.getDayOfYear()) {
+            if (start.getDayOfYear() != end.getDayOfYear()) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
 
@@ -101,19 +101,19 @@ public class CreateScheduleFlow {
 
             // 인스턴스 반복 생성
             List<ScheduleInstance> scheduleInstances = new ArrayList<>();
-            if(scheduleRecurrence.getRepeatType() == RepeatType.INTERVAL || scheduleRecurrence.getRepeatType() == RepeatType.DAILY) {
+            if (scheduleRecurrence.getRepeatType() == RepeatType.INTERVAL || scheduleRecurrence.getRepeatType() == RepeatType.DAILY) {
                 int interval = (scheduleRecurrence.getRepeatType() == RepeatType.DAILY) ? 1
                         : Integer.parseInt(scheduleRecurrence.getRepeatValue());
-                if(scheduleRecurrence.getEndType() == EndType.COUNT) {
+                if (scheduleRecurrence.getEndType() == EndType.COUNT) {
                     int cnt = Integer.parseInt(scheduleRecurrence.getEndValue());
-                    for(int i = 0; i < cnt; i++) {
+                    for (int i = 0; i < cnt; i++) {
                         scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, start, end));
                         start = start.plusDays(interval);
                         end = end.plusDays(interval);
                     }
                 } else {
                     LocalDateTime limit = LocalDateTime.parse(scheduleRecurrence.getEndValue());
-                    while(start.isBefore(limit)) {
+                    while (start.isBefore(limit)) {
                         scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, start, end));
                         start = start.plusDays(interval);
                         end = end.plusDays(interval);
@@ -148,7 +148,7 @@ public class CreateScheduleFlow {
 
                         scheduleInstances.add(scheduleService.createRecurrenceScheduleInstance(schedule, nextOccurrence, nextOccurrence.plus(duration)));
 
-                        if(++cnt >= max) break;
+                        if (++cnt >= max) break;
                     }
                     current = current.plusWeeks(1).with(DayOfWeek.MONDAY).withHour(0).withMinute(0);
                 }
@@ -175,7 +175,7 @@ public class CreateScheduleFlow {
                 for (int i = 1; i < scheduleInstances.size() - 1; i++) {
                     scheduleInstances.get(i).linking(scheduleInstances.get(i - 1), scheduleInstances.get(i + 1));
                 }
-                scheduleInstances.get(scheduleInstances.size()-1).linking(scheduleInstances.get(scheduleInstances.size() - 2), null);
+                scheduleInstances.get(scheduleInstances.size() - 1).linking(scheduleInstances.get(scheduleInstances.size() - 2), null);
             } else {
                 scheduleInstances.get(0).linking(null, null);
             }
@@ -184,7 +184,7 @@ public class CreateScheduleFlow {
 
             // 반환용 인스턴스
             scheduleInstance = scheduleInstances.get(0);
-            if(scheduleInstances.size() > 1) {
+            if (scheduleInstances.size() > 1) {
                 scheduleInstance2 = scheduleInstances.get(1);
             } else {
                 scheduleInstance2 = null;
@@ -192,7 +192,7 @@ public class CreateScheduleFlow {
         } else { // isRepeated is false
             LocalDateTime start = request.getStartAt();
             LocalDateTime end = request.getEndAt();
-            if(start.isAfter(end)) {
+            if (start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
 
@@ -212,5 +212,45 @@ public class CreateScheduleFlow {
                 scheduleMemberResponses,
                 new ScheduleInstanceResponse(scheduleInstance, null, new SimpleScheduleInstanceResponse(scheduleInstance2))
         );
+    }
+
+    @Transactional
+    public DetailScheduleResponse createScheduleV2(Integer userId, Integer mingleId, CreateScheduleV2Request request) {
+        User user = userService.findUserByUserId(userId);
+
+        if (!request.getMingleId().equals(mingleId)) {
+            throw new BaseException(GlobalExceptionCode.FORBIDDEN);
+        }
+        Mingle mingle = mingleService.findMingleById(mingleId);
+
+        // 등록 권한 확인
+        MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
+        if (mingle.getUsePermission() && !minglePermissionService.doesMemberHavePermission(mingleMember, PermissionType.CREATE)) {
+            throw new BaseException(GlobalExceptionCode.FORBIDDEN);
+        }
+
+        /*
+        * 우선 일정은 단순 일정과 반복 일정으로 나뉨
+        * 만약, 단순 일정인 경우
+        *   - 그냥 추가하면 됨
+        *
+        * 만약, 반복 일정인 경우
+        *   - 반복 방식으로 케이스 나눔
+        *   - INTERVAL 값이 1인 경우 DAILY 알아서 변경
+        *       - DAILY
+        *           - 매일하는 일정이므로 일정이 00:00부터 24:00을 넘어서면 안 됨
+        *       - WEEKLY
+        *           - 매주하는 일정을 요일로 설정하려면 일정이 월 00:00 ~ 일 24:00 사이로 설정되어야 함
+        *           - 한 주의 범위를 넘어서는 일정이라면 INTERVAL 방식으로 미리 바꾸는 흐름 필요
+        *       - MONTHLY
+        *           - 매월하는 일정은 일정이 1일 00:00 ~ 말일 24:00 사이로 설정되어야 함
+        *           - 한 일정 인스턴스의 범위가 한 달의 범위를 넘어선다면 직접 추가하는 로직 필요
+        *       - INTERVAL
+        *   - 반복 방식이 무엇이든 최대 Instance 생성은 100회로 제한함
+        *
+        * 각 케이스별로 메서드 생성
+        * ArrayList에 저장된 인스턴스를 일괄 처리하는 공통 로직 메서드 생성
+        *  */
+        return null;
     }
 }
