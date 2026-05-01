@@ -8,7 +8,7 @@ public class MailMessageConstant {
     public static String VERIFY_CODE_CONTENT(String purposeText, String authCode) {
         return "<html><body style='margin: 0; padding: 0; background-color: #f4f7f9;'>" +
                 "<table align='center' border='0' cellpadding='0' cellspacing='0' width='100%' style='max-width: 600px; background-color: #ffffff; margin: 20px auto; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);'>" +
-                "<tr><td style='padding: 40px 20px; text-align: center; background-color: #4A90E2;'>" +
+                "<tr><td style='padding: 40px 20px; text-align: center; background-color: #6EC1E4;'>" +
                 "<h1 style='color: #ffffff; margin: 0; font-size: 24px; font-weight: bold;'>MingleDay</h1>" +
                 "</td></tr>" +
                 "<tr><td style='padding: 40px 30px; text-align: center;'>" +
@@ -17,11 +17,11 @@ public class MailMessageConstant {
                 "<div style='display: inline-block; padding: 15px 40px; background-color: #f0f4f8; border-radius: 4px; border: 1px dashed #4A90E2;'>" +
                 "<span style='font-size: 32px; font-weight: bold; color: #4A90E2; letter-spacing: 5px;'>" + authCode + "</span>" +
                 "</div>" +
-                "<p style='color: #999999; font-size: 14px; margin-top: 30px;'>인증 코드는 발송 후 5분 동안 유효합니다.</p>" +
+                "<p style='color: #999999; font-size: 14px; margin-top: 30px;'>인증 코드는 발송 후 10분 동안 유효합니다.</p>" +
                 "</td></tr>" +
                 "<tr><td style='padding: 20px; background-color: #f9f9f9; text-align: center;'>" +
                 "<p style='font-size: 12px; color: #aaaaaa; margin: 0;'>" +
-                "본인이 요청하지 않은 경우, 고객센터로 문의해 주세요.<br>" +
+                "본인이 요청하지 않은 경우, 해당 이메일로 문의해 주세요.<br>" +
                 "&copy; 2026 MingleDay. All rights reserved." +
                 "</p></td></tr>" +
                 "</table>" +

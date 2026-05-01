@@ -6,7 +6,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import returns.mingleday.flow.schedule.CreateScheduleFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
-import returns.mingleday.model.schedule.CreateScheduleV2Request;
+import returns.mingleday.model.schedule.CreateScheduleRequest;
 import returns.mingleday.model.schedule.DetailScheduleResponse;
 
 @RestController
@@ -17,7 +17,7 @@ public class ScheduleManipulateV2Controller {
     private final CreateScheduleFlow createScheduleFlow;
 
     @PostMapping
-    public ResponseEntity<DetailScheduleResponse> createSchedule(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody CreateScheduleV2Request request) {
+    public ResponseEntity<DetailScheduleResponse> createSchedule(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody CreateScheduleRequest request) {
         DetailScheduleResponse response = createScheduleFlow.createScheduleV2(user.getUserId(), mingleId, request);
         return ResponseEntity.ok(response);
     }
