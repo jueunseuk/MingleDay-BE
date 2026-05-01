@@ -16,6 +16,7 @@ import returns.mingleday.model.category.CategoryResponse;
 import returns.mingleday.model.category.UpsertCategoryRequest;
 import returns.mingleday.repository.CategoryRepository;
 import returns.mingleday.repository.ScheduleRepository;
+import returns.mingleday.response.code.CategoryExceptionCode;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
@@ -23,6 +24,7 @@ import returns.mingleday.service.mingle.MinglePermissionService;
 import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.user.UserService;
+import returns.mingleday.util.ColorUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,8 +68,16 @@ public class CategoryService {
         if(!request.getMingleId().equals(mingleId)) {
             throw new BaseException(GlobalExceptionCode.BAD_REQUEST_FOR_MISMATCH);
         }
-        Mingle mingle = mingleService.findMingleById(mingleId);
 
+        ColorUtil.validateHex(request.getTextColor());
+        ColorUtil.validateHex(request.getBackgroundColor());
+
+        double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
+        if (contrast < 4.5) {
+            throw new BaseException(CategoryExceptionCode.TOO_SIMILAR_WITH_COLORS);
+        }
+
+        Mingle mingle = mingleService.findMingleById(mingleId);
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
         if(mingle.getUsePermission() &&
                 !mingle.getOwner().equals(user) &&
@@ -94,8 +104,16 @@ public class CategoryService {
         if(!request.getMingleId().equals(mingleId)) {
             throw new BaseException(GlobalExceptionCode.BAD_REQUEST_FOR_MISMATCH);
         }
-        Mingle mingle = mingleService.findMingleById(mingleId);
 
+        ColorUtil.validateHex(request.getTextColor());
+        ColorUtil.validateHex(request.getBackgroundColor());
+
+        double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
+        if (contrast < 4.5) {
+            throw new BaseException(CategoryExceptionCode.TOO_SIMILAR_WITH_COLORS);
+        }
+
+        Mingle mingle = mingleService.findMingleById(mingleId);
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
         if(mingle.getUsePermission() &&
                 !mingle.getOwner().equals(user) &&
