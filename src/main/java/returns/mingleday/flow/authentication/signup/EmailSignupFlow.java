@@ -32,14 +32,14 @@ public class EmailSignupFlow {
         log.info("Signup Request Occurred - email: {}", signupRequest.getEmail());
 
         String email = signupRequest.getEmail();
-        Email emailRequest = emailService.getLatestEmailRequest(email, Purpose.REISSUE);
+        Email emailRequest = emailService.getLatestEmailRequest(email, Purpose.REGISTER);
         if(emailRequest == null || !emailRequest.getIsVerified()) {
-            log.warn("Request to change password for unauthenticated users - email: {}", email);
+            log.warn("Request to signup for unverified users - email: {}", email);
             throw new BaseException(UserExceptionCode.UNAUTHENTICATED_USER);
         }
 
         if(emailRequest.getExpiredAt().isBefore(LocalDateTime.now())) {
-            log.warn("Request to change password for expired authentication - email: {}", email);
+            log.warn("Request to signup for expired verification - email: {}", email);
             throw new BaseException(UserExceptionCode.AUTHENTICATED_TIME_EXPIRES);
         }
 
