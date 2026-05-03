@@ -54,7 +54,7 @@ public class EmailService {
 
     @Transactional
     public void verifyCode(String email, String code, Purpose purpose) {
-        Email check = emailRepository.findFirstByEmailAndPurpose(email, purpose).orElse(null);
+        Email check = getLatestEmailRequest(email, purpose);
 
         if(check == null) {
             log.info("Non-existent mail verification - email: {}, purpose: {}", StringMasking.emailMasking(email), purpose);
@@ -81,7 +81,7 @@ public class EmailService {
     }
 
     public Email getLatestEmailRequest(String email, Purpose purpose) {
-        return emailRepository.findFirstByEmailAndPurpose(email, purpose).orElse(null);
+        return emailRepository.findFirstByEmailAndPurposeOrderByCreatedAtDesc(email, purpose).orElse(null);
     }
 
     private String generateVerificationCode() {
