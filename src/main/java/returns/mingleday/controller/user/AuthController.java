@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import returns.mingleday.flow.authentication.password.ResetPasswordFlow;
 import returns.mingleday.flow.authentication.login.EmailLoginFlow;
 import returns.mingleday.flow.authentication.signup.EmailSignupFlow;
+import returns.mingleday.flow.authentication.withdraw.WithdrawFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
 import returns.mingleday.model.auth.LoginRequest;
 import returns.mingleday.model.auth.PasswordResetRequest;
@@ -28,6 +29,7 @@ public class AuthController {
     private final EmailLoginFlow emailLoginFlow;
     private final ResetPasswordFlow resetPasswordFlow;
     private final AuthService authService;
+    private final WithdrawFlow withdrawFlow;
 
     @PostMapping("/signup")
     public ResponseEntity<TokenResponse> signup(@RequestBody SignupRequest request) {
@@ -63,5 +65,11 @@ public class AuthController {
     public ResponseEntity<SuccessResponse<String>> passwordReset(@RequestBody PasswordResetRequest request) {
         resetPasswordFlow.resetPassword(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(SuccessResponse.success("Success to reset password"));
+    }
+
+    @DeleteMapping("/withdraw")
+    public ResponseEntity<SuccessResponse<String>> withdraw(@AuthenticationPrincipal AuthUserDetail user) {
+        withdrawFlow.withdraw(user.getUserId());
+        return ResponseEntity.ok(SuccessResponse.success("Success to withdraw"));
     }
 }
