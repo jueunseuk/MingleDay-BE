@@ -11,8 +11,12 @@ import returns.mingleday.flow.mingle.UpdateMingleProfileFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
 import returns.mingleday.model.mingle.CreateMingleRequest;
 import returns.mingleday.model.mingle.CreateMingleResponse;
+import returns.mingleday.model.mingle.MinglesResponse;
 import returns.mingleday.model.mingle.UpdateMingleRequest;
 import returns.mingleday.response.success.SuccessResponse;
+import returns.mingleday.service.mingle.MingleService;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -22,6 +26,7 @@ public class MingleController {
     private final CreateMingleFlow createMingleFlow;
     private final UpdateMingleInfoFlow updateMingleInfoFlow;
     private final UpdateMingleProfileFlow updateMingleProfileFlow;
+    private final MingleService mingleService;
 
     @PostMapping
     public ResponseEntity<CreateMingleResponse> createMingle(@AuthenticationPrincipal AuthUserDetail user, @RequestBody CreateMingleRequest request) {
@@ -39,5 +44,11 @@ public class MingleController {
     public ResponseEntity<SuccessResponse<String>> updateMingleProfile(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody MultipartFile request) {
         updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, request);
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<MinglesResponse>> getAllMyMingles(@AuthenticationPrincipal AuthUserDetail user) {
+        List<MinglesResponse> responses = mingleService.getMinglesByUser(user.getUserId());
+        return ResponseEntity.ok(responses);
     }
 }

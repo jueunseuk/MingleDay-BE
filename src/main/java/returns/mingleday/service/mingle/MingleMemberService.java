@@ -43,7 +43,7 @@ public class MingleMemberService {
     }
 
     public List<MingleMembersResponse> getMingleMembers(Integer userId, Integer mingleId) {
-        User user = userService.findUserByUserId(userId);
+        userService.findUserByUserId(userId);
         Mingle mingle = mingleService.findMingleById(mingleId);
         List<MingleMember> mingleMembers = mingleMemberRepository.findAllByMingleOrderByCreatedAt(mingle);
         return mingleMembers.stream().map(mingleMember -> new MingleMembersResponse(mingleMember.getUser(), mingleMember)).toList();
@@ -54,7 +54,10 @@ public class MingleMemberService {
         MingleMember other = getMingleMember(mingleMemberId);
 
         List<Mingle> mingles = mingleMemberRepository.findCommonMingles(userId, other.getUser().getUserId(), mingle.getMingleId());
-        return new MingleMemberResponse(other, mingles.stream().map(MinglesResponse::new).toList());
+        return new MingleMemberResponse(
+                other,
+                mingles.stream().map(MinglesResponse::new).toList()
+        );
     }
 
     public List<Mingle> getAllMingle(User user) {

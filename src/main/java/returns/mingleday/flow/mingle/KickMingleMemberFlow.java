@@ -52,8 +52,8 @@ public class KickMingleMemberFlow {
             throw new BaseException(GlobalExceptionCode.FORBIDDEN);
         }
 
-        if(targetUser.equals(user)) {
-            throw new BaseException(MingleMemberExceptionCode.YOU_CANNOT_EXPEL_YOURSELF);
+        if(targetUser.equals(mingle.getOwner()) || targetUser.equals(user)) {
+            throw new BaseException(MingleMemberExceptionCode.CANNOT_EXPEL_OWNER);
         }
 
         if(targetUser.equals(mingle.getOwner())) {

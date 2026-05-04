@@ -7,9 +7,11 @@ import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
 import returns.mingleday.model.mingle.CreateMingleRequest;
+import returns.mingleday.model.mingle.MinglesResponse;
 import returns.mingleday.repository.*;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
+import returns.mingleday.service.user.UserService;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class MingleService {
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
     private final ScheduleRecurrenceRepository scheduleRecurrenceRepository;
+    private final UserService userService;
 
     @Transactional
     public Mingle createMingle(User user, CreateMingleRequest request) {
@@ -74,5 +77,11 @@ public class MingleService {
         mingleLogRepository.deleteAllByMingle(mingle);
 
         mingleRepository.delete(mingle);
+    }
+
+    public List<MinglesResponse> getMinglesByUser(Integer userId) {
+        User user = userService.findUserByUserId(userId);
+        List<Mingle> mingles = mingleMemberRepository.findAllMingleByUser(user);
+        return mingles.stream().map(MinglesResponse::new).toList();
     }
 }
