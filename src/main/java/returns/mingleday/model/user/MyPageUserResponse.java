@@ -20,18 +20,14 @@ public class MyPageUserResponse {
     private Role role;
     private Integer belongMingleCnt;
 
-    public MyPageUserResponse(User user, Boolean isMe, Integer belongMingleCnt) {
+    public MyPageUserResponse(User user, Integer belongMingleCnt) {
         this.userId = user.getUserId();
         this.name = user.getName();
         this.nickname = user.getNickname();
         this.email = user.getEmail();
         this.profileUrl = user.getProfileUrl();
         this.createdAt = user.getCreatedAt();
-        if(isMe) {
-            this.passwordUpdatedAt = user.getPasswordUpdatedAt();
-        } else {
-            this.passwordUpdatedAt = null;
-        }
+        this.passwordUpdatedAt = user.getPasswordUpdatedAt();
         this.birthday = user.getBirthday();
         this.role = user.getRole();
         this.belongMingleCnt = belongMingleCnt;

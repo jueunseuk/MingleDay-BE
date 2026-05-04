@@ -48,9 +48,9 @@ public class UserController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{targetId}")
-    public ResponseEntity<MyPageUserResponse> getUserProfile(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer targetId) {
-        MyPageUserResponse response = userService.getMyPageInfoOfUser(user.getUserId(), targetId);
+    @GetMapping("/me")
+    public ResponseEntity<MyPageUserResponse> getMyProfile(@AuthenticationPrincipal AuthUserDetail user) {
+        MyPageUserResponse response = userService.getMyPageInfoOfUser(user.getUserId());
         return ResponseEntity.ok(response);
     }
 }
