@@ -9,6 +9,7 @@ import returns.mingleday.flow.user.profile.UpdateProfileImageFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
 import returns.mingleday.model.schedule.MonthlyScheduleResponse;
 import returns.mingleday.model.user.UpdateProfileInfoRequest;
+import returns.mingleday.model.user.MyPageUserResponse;
 import returns.mingleday.response.success.SuccessResponse;
 import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.user.UserService;
@@ -44,6 +45,12 @@ public class UserController {
             @RequestParam String keyword
     ) {
         List<MonthlyScheduleResponse> response = scheduleSearchService.findMySchedules(user.getUserId(), year, month, keyword);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<MyPageUserResponse> getMyProfile(@AuthenticationPrincipal AuthUserDetail user) {
+        MyPageUserResponse response = userService.getMyPageInfoOfUser(user.getUserId());
         return ResponseEntity.ok(response);
     }
 }

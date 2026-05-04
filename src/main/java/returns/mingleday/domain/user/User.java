@@ -10,6 +10,7 @@ import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.util.StringParser;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -44,6 +45,9 @@ public class User extends BaseTime {
 
     @Column(name = "profile_url")
     private String profileUrl;
+
+    @Column(name = "birthday")
+    private LocalDate birthday;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "role", nullable = false)

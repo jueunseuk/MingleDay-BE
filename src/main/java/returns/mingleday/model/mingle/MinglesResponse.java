@@ -8,10 +8,12 @@ public class MinglesResponse {
     private Integer mingleId;
     private String mingleName;
     private String profileUrl;
+    private Integer memberCnt;
 
     public MinglesResponse(Mingle mingle) {
         this.mingleId = mingle.getMingleId();
         this.mingleName = mingle.getName();
         this.profileUrl = mingle.getProfileUrl();
+        this.memberCnt = mingle.getMemberCnt();
     }
 }
