@@ -32,7 +32,7 @@ public class MinglePermissionController {
         return ResponseEntity.ok(SuccessResponse.success("success to update mingle member permission"));
     }
 
-    @GetMapping
+    @GetMapping("/permissions")
     public ResponseEntity<List<MingleMemberPermissionResponse>> getMingleMemberPermissions(
         @AuthenticationPrincipal AuthUserDetail user,
         @PathVariable Integer mingleId
@@ -41,7 +41,7 @@ public class MinglePermissionController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/{mingleMemberId}")
+    @GetMapping("/{mingleMemberId}/permissions")
     public ResponseEntity<MingleMemberPermissionResponse> getMingleMemberPermission(
         @AuthenticationPrincipal AuthUserDetail user,
         @PathVariable Integer mingleId,
