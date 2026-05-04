@@ -28,4 +28,6 @@ public interface MingleMemberRepository extends JpaRepository<MingleMember, Long
     void deleteAllByMingle(Mingle mingle);
 
     List<MingleMember> findAllByMingleOrderByCreatedAt(Mingle mingle);
+
+    Integer countMingleMemberByUser(User target);
 }

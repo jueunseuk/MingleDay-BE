@@ -6,7 +6,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.model.user.MyPageUserResponse;
 import returns.mingleday.model.user.UpdateProfileInfoRequest;
+import returns.mingleday.repository.MingleMemberRepository;
+import returns.mingleday.repository.MingleRepository;
 import returns.mingleday.repository.UserRepository;
 import returns.mingleday.response.code.UserExceptionCode;
 import returns.mingleday.response.exception.BaseException;
@@ -21,6 +24,8 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final MingleRepository mingleRepository;
+    private final MingleMemberRepository mingleMemberRepository;
 
     public User createUser(String name, String email, String password, String nickname) {
         User.isValidPassword(password);
@@ -54,5 +59,13 @@ public class UserService {
         }
 
         return candidates.size();
+    }
+
+    public MyPageUserResponse getMyPageInfoOfUser(Integer userId, Integer targetId) {
+        User me = findUserByUserId(userId);
+        User target = findUserByUserId(targetId);
+        Integer belongMingleCnt = mingleMemberRepository.countMingleMemberByUser(target);
+
+        return new MyPageUserResponse(target, me.equals(target), belongMingleCnt);
     }
 }

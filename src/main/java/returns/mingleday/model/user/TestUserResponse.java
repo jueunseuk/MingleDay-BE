@@ -1,8 +1,10 @@
 package returns.mingleday.model.user;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
-public class UserResponse {
+@AllArgsConstructor
+public class TestUserResponse {
     private Integer userId;
 }
