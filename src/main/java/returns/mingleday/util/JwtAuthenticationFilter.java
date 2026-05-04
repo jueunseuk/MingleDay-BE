@@ -49,10 +49,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    log.info("[JWT-Filter] 인증 성공: {}", userId);
+                    log.info("[JWT-Filter] Success to Authentication: {}", userId);
                 }
             } catch (ExpiredJwtException e) {
-                log.warn("[JWT-Filter] 토큰 만료");
+                log.warn("[JWT-Filter] Token Expired");
 
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json;charset=UTF-8");
@@ -65,7 +65,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 return;
 
             } catch (Exception e) {
-                log.error("[JWT-Filter] 유효하지 않은 토큰");
+                log.error("[JWT-Filter] Invalid Token");
 
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 response.setContentType("application/json;charset=UTF-8");
