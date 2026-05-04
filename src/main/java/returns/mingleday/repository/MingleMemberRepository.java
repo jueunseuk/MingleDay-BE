@@ -30,4 +30,7 @@ public interface MingleMemberRepository extends JpaRepository<MingleMember, Long
     List<MingleMember> findAllByMingleOrderByCreatedAt(Mingle mingle);
 
     Integer countMingleMemberByUser(User target);
+
+    @Query("select mm.mingle from MingleMember mm where mm.user = :user")
+    List<Mingle> findAllMingleByUser(User user);
 }
