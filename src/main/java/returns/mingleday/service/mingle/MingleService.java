@@ -6,8 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import returns.mingleday.domain.mingle.Mingle;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
-import returns.mingleday.model.mingle.CreateMingleRequest;
-import returns.mingleday.model.mingle.MinglesResponse;
+import returns.mingleday.model.mingle.*;
 import returns.mingleday.repository.*;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
@@ -19,6 +18,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MingleService {
 
+    private final UserService userService;
     private final MingleRepository mingleRepository;
     private final ScheduleRepository scheduleRepository;
     private final MingleLogRepository mingleLogRepository;
@@ -26,7 +26,6 @@ public class MingleService {
     private final ScheduleMemberRepository scheduleMemberRepository;
     private final ScheduleInstanceRepository scheduleInstanceRepository;
     private final ScheduleRecurrenceRepository scheduleRecurrenceRepository;
-    private final UserService userService;
 
     @Transactional
     public Mingle createMingle(User user, CreateMingleRequest request) {

@@ -6,14 +6,14 @@ import returns.mingleday.domain.mingle.MingleMember;
 import java.util.List;
 
 @Data
-public class MingleMemberResponse {
+public class MingleMemberWithPermissionResponse {
     private Long memberId;
     private String name;
-    private List<MinglesResponse> belongingMingles;
+    private List<MinglePermissionResponse> permissions;
 
-    public MingleMemberResponse(MingleMember mingleMember, List<MinglesResponse> minglesList) {
+    public MingleMemberWithPermissionResponse(MingleMember mingleMember, List<MinglePermissionResponse> permissions) {
         this.memberId = mingleMember.getMingleMemberId();
         this.name = mingleMember.getDisplayName();
-        this.belongingMingles = minglesList;
+        this.permissions = permissions;
     }
 }
