@@ -47,7 +47,7 @@ public class UpdateMingleSettingFlow {
             throw new BaseException(MingleExceptionCode.INVALID_MINGLE_SETTING_OPTION);
         }
 
-        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.MODIFY);
+        createMingleLogService.execute(mingle, mingleMember, mingle, MingleLogType.MODIFY);
         log.info("Update a mingle setting - userId: {}, mingleId: {}", userId, mingleId);
 
         mingleRepository.save(mingle);

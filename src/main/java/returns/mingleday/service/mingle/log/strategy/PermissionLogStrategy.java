@@ -2,7 +2,6 @@ package returns.mingleday.service.mingle.log.strategy;
 
 import org.springframework.stereotype.Component;
 import returns.mingleday.domain.mingle.*;
-import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.response.code.MingleLogExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 

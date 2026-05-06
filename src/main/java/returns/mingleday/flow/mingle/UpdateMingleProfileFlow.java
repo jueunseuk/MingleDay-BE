@@ -46,7 +46,7 @@ public class UpdateMingleProfileFlow {
         Image image = imageService.uploadImage(file, mingleId.longValue(), ImageType.GROUP_PROFILE);
         mingle.updateProfile(image.getPath());
 
-        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.MODIFY);
+        createMingleLogService.execute(mingle, mingleMember, mingle, MingleLogType.MODIFY);
         log.info("Update a mingle profile image - userId: {}, mingleId: {}", userId, mingleId);
 
         mingleRepository.save(mingle);
