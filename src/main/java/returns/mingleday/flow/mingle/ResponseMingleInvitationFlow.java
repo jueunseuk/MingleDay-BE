@@ -59,9 +59,9 @@ public class ResponseMingleInvitationFlow {
             createMingleLogService.execute(mingleInvitation.getMingle(), mingleMember, null, MingleLogType.JOIN);
             log.info("An user has accepted the invitation - userId: {}, memberId: {}", user.getUserId(), mingleMember.getMingleMemberId());
 
-            return "success to accept the invitation";
-        } else {
             return MailMessageConstant.INVITATION_RESPONSE;
+        } else {
+            return MailMessageConstant.NEED_SIGNUP;
         }
     }
 }

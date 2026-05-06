@@ -10,8 +10,6 @@ import returns.mingleday.model.mingle.MingleMemberWithPermissionResponse;
 import returns.mingleday.model.mingle.MinglePermissionResponse;
 import returns.mingleday.model.mingle.MingleResponse;
 import returns.mingleday.repository.MinglePermissionRepository;
-import returns.mingleday.response.code.GlobalExceptionCode;
-import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.user.UserService;
@@ -34,10 +32,6 @@ public class SearchMingleInformationFlow {
         User user = userService.findUserByUserId(userId);
         Mingle mingle = mingleService.findMingleById(mingleId);
         MingleMember loginMember = mingleMemberService.getMingleMember(mingle, user);
-
-        if (!mingle.getOwner().equals(user)) {
-            throw new BaseException(GlobalExceptionCode.FORBIDDEN);
-        }
 
         List<MinglePermission> minglePermissions =
                 minglePermissionRepository.findAllByMingleOrderByMemberId(mingle);

@@ -51,12 +51,10 @@ public class MingleService {
                 .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 
-    public void updateMingle(Mingle mingle, String name, String description, Boolean usePermission, Boolean useRealname) {
+    public void updateMingle(Mingle mingle, String name, String description) {
         mingle.updateInfo(
                 name,
-                description,
-                usePermission,
-                useRealname
+                description
         );
     }
 

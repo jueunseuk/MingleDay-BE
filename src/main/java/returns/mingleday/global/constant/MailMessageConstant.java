@@ -58,11 +58,89 @@ public class MailMessageConstant {
     }
 
     public static final String INVITATION_RESPONSE = """
-        <html>
-            <body style="font-family: Arial; text-align: center; padding-top: 100px;">
-                <h1 style="color: #4A90E2;">초대 수락 완료</h1>
-                <p>MingleDay 밍글 참여가 완료되었습니다.</p>
-            </body>
-        </html>
-        """;
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>MingleDay</title>
+                    </head>
+                    <body style="font-family: Arial; text-align: center; padding-top: 100px;">
+                        <h1 style="color: #4A90E2;">초대 수락 완료</h1>
+                        <p>MingleDay 밍글 참여가 완료되었습니다.</p>
+                    </body>
+                </html>
+                """;
+
+    public static final String NEED_SIGNUP = """
+                <!DOCTYPE html>
+                <html>
+                    <head>
+                        <meta charset="UTF-8">
+                        <title>MingleDay Invitation</title>
+                    </head>
+            
+                    <body style="
+                        margin: 0;
+                        padding: 0;
+                        background-color: #f5f7fb;
+                        font-family: Arial, sans-serif;
+                    ">
+            
+                        <div style="
+                            max-width: 500px;
+                            margin: 80px auto;
+                            background-color: white;
+                            border-radius: 16px;
+                            padding: 50px 40px;
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+                            text-align: center;
+                        ">
+            
+                            <h1 style="
+                                color: #4A90E2;
+                                margin-bottom: 20px;
+                                font-size: 28px;
+                            ">
+                                회원가입이 필요합니다
+                            </h1>
+            
+                            <p style="
+                                color: #555;
+                                font-size: 16px;
+                                line-height: 1.7;
+                                margin-bottom: 35px;
+                            ">
+                                초대를 수락하려면<br>
+                                먼저 MingleDay 회원가입이 필요합니다.
+                            </p>
+            
+                            <a href="http://returns.ddns.net/signup"
+                               style="
+                                    display: inline-block;
+                                    background-color: #4A90E2;
+                                    color: white;
+                                    text-decoration: none;
+                                    padding: 14px 28px;
+                                    border-radius: 8px;
+                                    font-size: 15px;
+                                    font-weight: bold;
+                               ">
+                                회원가입 하러 가기
+                            </a>
+            
+                            <p style="
+                                margin-top: 40px;
+                                color: #999;
+                                font-size: 13px;
+                                line-height: 1.6;
+                            ">
+                                회원가입 완료 후,<br>
+                                초대 메일의 버튼을 다시 눌러주세요.
+                            </p>
+            
+                        </div>
+            
+                    </body>
+                </html>
+                """;
 }

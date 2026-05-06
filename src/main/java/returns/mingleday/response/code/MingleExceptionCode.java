@@ -8,7 +8,7 @@ import returns.mingleday.response.exception.ExceptionCode;
 @Getter
 @AllArgsConstructor
 public enum MingleExceptionCode implements ExceptionCode {
-    A("MINGLE_001", "", HttpStatus.BAD_REQUEST),
+    INVALID_MINGLE_SETTING_OPTION("MINGLE_001", "유효하지 않은 옵션 값입니다.", HttpStatus.BAD_REQUEST),
     ;
 
     private final String code;
