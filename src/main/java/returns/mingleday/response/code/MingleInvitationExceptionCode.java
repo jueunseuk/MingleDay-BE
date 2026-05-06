@@ -9,7 +9,9 @@ import returns.mingleday.response.exception.ExceptionCode;
 @AllArgsConstructor
 public enum MingleInvitationExceptionCode implements ExceptionCode {
     NOT_INVITED_USER_TO_THIS_MINGLE("MING_INV_001", "해당 밍글에 초대 받지 않은 사용자입니다.", HttpStatus.BAD_REQUEST),
-    ALREADY_JOIN_OR_REJECT_MINGLE("MING_INV_002", "이미 가입했거나 거절한 밍글입니다.", HttpStatus.BAD_REQUEST),;
+    ALREADY_JOIN_OR_REJECT_MINGLE("MING_INV_002", "이미 가입했거나 거절한 밍글입니다.", HttpStatus.BAD_REQUEST),
+    INVITATION_TOKEN_MISMATCH("MING_INV_003", "유효하지 않은 초대장입니다.", HttpStatus.BAD_REQUEST ),
+    ;
 
     private final String code;
     private final String message;

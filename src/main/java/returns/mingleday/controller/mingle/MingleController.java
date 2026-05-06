@@ -45,6 +45,8 @@ public class MingleController {
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
     }
 
+    // patch setting api
+
     @GetMapping
     public ResponseEntity<List<MinglesResponse>> getAllMyMingles(@AuthenticationPrincipal AuthUserDetail user) {
         List<MinglesResponse> responses = mingleService.getMinglesByUser(user.getUserId());

@@ -32,6 +32,7 @@ public class MingleInvitationService {
     @Transactional
     public void createMingleInvitation(Mingle mingle, MingleMember mingleMember, String email) {
         Email.validEmail(email);
+        MingleInvitation mingleInvitation = MingleInvitation.of(mingle, mingleMember, email);
 
         mailUtil.sendMail(
                 email,
@@ -40,23 +41,22 @@ public class MingleInvitationService {
                         mingleMember.getDisplayName(),
                         mingle.getName(),
                         mingle.getDescription(),
-                        "URL 추가 예정"
+                        "http://returns.ddns.net:8080/api/v1/mingles/invitation/accept?token=" + mingleInvitation.getToken()
                 ),
                 Purpose.INVITATION
         );
 
-        MingleInvitation mingleInvitation = MingleInvitation.of(mingle, mingleMember, email);
         mingleInvitationRepository.save(mingleInvitation);
-    }
-
-    public MingleInvitation getMingleInvitation(Long id) {
-        return mingleInvitationRepository.findById(id)
-                .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 
     public List<MingleInvitationResponse> getAllMingleInvitations(Integer userId) {
         User user = userService.findUserByUserId(userId);
         List<MingleInvitation> mingleInvitations = mingleInvitationRepository.findAllByTargetEmailOrderByCreatedAtDesc(user.getEmail());
         return mingleInvitations.stream().map(MingleInvitationResponse::new).toList();
+    }
+
+    public MingleInvitation findMingleInvitationByToken(String token) {
+        return mingleInvitationRepository.findMingleInvitationByToken(token)
+                .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

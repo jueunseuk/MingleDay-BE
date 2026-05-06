@@ -43,6 +43,9 @@ public class MailMessageConstant {
                 "밍글 설명: " + mingleDescription +
                 "</p>" +
                 "<p>함께 일정을 관리하고 소통하려면 아래의 버튼을 클릭하여 참여해 주세요!</p>" +
+                "<p style='color: #E67E22; font-size: 0.9em; margin-top: 10px;'>" +
+                "※ 초대 링크는 발송 후 3시간 동안만 유효합니다." +
+                "</p>" +
                 "<div style='text-align: center; margin-top: 30px;'>" +
                 "<a href='" + url + "' style='background-color: #4A90E2; color: white; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;'>초대 수락하기</a>" +
                 "</div>" +
@@ -53,4 +56,13 @@ public class MailMessageConstant {
                 "</div>" +
                 "</body></html>";
     }
+
+    public static final String INVITATION_RESPONSE = """
+        <html>
+            <body style="font-family: Arial; text-align: center; padding-top: 100px;">
+                <h1 style="color: #4A90E2;">초대 수락 완료</h1>
+                <p>MingleDay 밍글 참여가 완료되었습니다.</p>
+            </body>
+        </html>
+        """;
 }
