@@ -134,4 +134,16 @@ public class User extends BaseTime {
     public void toDormant() {
         this.status = Status.DORMANT;
     }
+
+    public void withdraw() {
+        this.status = Status.WITHDRAWN;
+        this.name = "탈퇴한 사용자";
+        this.nickname = "탈퇴한 사용자";
+        this.profileUrl = null;
+        this.passwordUpdatedAt = null;
+        this.lastLoginAt = null;
+        this.email = "";
+        this.birthday = null;
+        this.password = "";
+    }
 }

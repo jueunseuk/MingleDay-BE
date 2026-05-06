@@ -64,12 +64,11 @@ public class Mingle extends BaseTime {
                 .build();
     }
 
-    public void updateInfo(String name, String description, Boolean usePermission, Boolean useRealname) {
+    public void updateInfo(String name, String description) {
         isValidName(name);
 
+        this.name = name;
         this.description = description;
-        this.usePermission = usePermission != null && usePermission;
-        this.useRealname = useRealname != null && useRealname;
     }
 
     public void updateProfile(String path) {
@@ -94,5 +93,21 @@ public class Mingle extends BaseTime {
 
     public void decreaseMemberCnt() {
         this.memberCnt = Math.max(1, this.memberCnt - 1);
+    }
+
+    public void updateUseRealname(Boolean value) {
+        if(value == null) {
+            this.useRealname = false;
+            return;
+        }
+        this.useRealname = value;
+    }
+
+    public void updateUsePermission(Boolean value) {
+        if(value == null) {
+            this.usePermission = false;
+            return;
+        }
+        this.usePermission = value;
     }
 }

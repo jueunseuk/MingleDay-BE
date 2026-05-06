@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import returns.mingleday.global.domain.BaseTime;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Builder
@@ -39,13 +40,19 @@ public class MingleInvitation extends BaseTime {
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
+    @Column(name = "token")
+    private String token;
+
     public static MingleInvitation of(Mingle mingle, MingleMember mingleMember, String email) {
+        String token = UUID.randomUUID().toString();
+
         return MingleInvitation.builder()
                 .mingle(mingle)
                 .mingleMember(mingleMember)
                 .targetEmail(email)
                 .responseType(ResponseType.WAIT)
                 .expiredAt(LocalDateTime.now().plusHours(3))
+                .token(token)
                 .build();
     }
 

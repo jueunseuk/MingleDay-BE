@@ -21,6 +21,7 @@ public class SecurityConstant {
             "/api/v1/auth/email/codes",
             "/api/v1/auth/email/codes/verify",
             "/api/v1/auth/password/reset",
+            "/api/v1/mingles/invitation/accept/**",
             "/images/**",
             "/api/v1/test/ping"
     );

@@ -16,5 +16,4 @@ public class MingleMemberResponse {
         this.name = mingleMember.getDisplayName();
         this.belongingMingles = minglesList;
     }
-
 }

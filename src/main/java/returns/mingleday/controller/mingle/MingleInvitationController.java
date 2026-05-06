@@ -1,6 +1,7 @@
 package returns.mingleday.controller.mingle;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +10,6 @@ import returns.mingleday.flow.mingle.ResponseMingleInvitationFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
 import returns.mingleday.model.mingle.InviteMingleRequest;
 import returns.mingleday.model.mingle.MingleInvitationResponse;
-import returns.mingleday.model.mingle.ResponseMingleResponse;
-import returns.mingleday.model.mingle.ResponseMingleRequest;
 import returns.mingleday.response.success.SuccessResponse;
 import returns.mingleday.service.mingle.MingleInvitationService;
 
@@ -31,10 +30,10 @@ public class MingleInvitationController {
         return ResponseEntity.ok(SuccessResponse.success("Success to create a mingle invitation"));
     }
 
-    @PatchMapping("/response")
-    public ResponseEntity<ResponseMingleResponse> responseMingleInvitation(@AuthenticationPrincipal AuthUserDetail user, @RequestBody ResponseMingleRequest request) {
-        ResponseMingleResponse response = responseMingleInvitationFlow.responseMingleInvitation(user.getUserId(), request);
-        return ResponseEntity.ok(response);
+    @GetMapping("/accept")
+    public ResponseEntity<String> responseMingleInvitation(@RequestParam String token) {
+        String response = responseMingleInvitationFlow.responseMingleInvitation(token);
+        return ResponseEntity.ok().contentType(MediaType.TEXT_HTML).body(response);
     }
 
     @GetMapping

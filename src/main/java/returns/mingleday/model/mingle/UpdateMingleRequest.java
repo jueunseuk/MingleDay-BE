@@ -8,7 +8,5 @@ public class UpdateMingleRequest {
     private Integer mingleId;
     private String name;
     private String description;
-    private Boolean usePermission;
-    private Boolean useRealname;
     private MingleType mingleType;
 }
