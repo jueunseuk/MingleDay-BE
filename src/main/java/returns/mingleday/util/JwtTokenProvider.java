@@ -27,13 +27,12 @@ public class JwtTokenProvider {
     }
 
     public boolean isValidToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
-            return true;
-        } catch (Exception e) {
-            log.error("JWT validation failure: {}", e.getMessage());
-            return false;
-        }
+        Jwts.parserBuilder()
+                .setSigningKey(getSigningKey())
+                .build()
+                .parseClaimsJws(token);
+
+        return true;
     }
 
     private Claims parseClaims(String token) {

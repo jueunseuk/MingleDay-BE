@@ -10,7 +10,6 @@ import java.time.LocalDateTime;
 @Data
 public class MyMingleLogResponse {
     private Long mingleLogId;
-    private MingleResponse mingleResponse;
     private Long operatorId;
     private String operatorName;
     private TargetType targetType;
@@ -22,7 +21,6 @@ public class MyMingleLogResponse {
 
     public MyMingleLogResponse(MingleLog mingleLog) {
         this.mingleLogId = mingleLog.getMingleLogId();
-        this.mingleResponse = new MingleResponse(mingleLog.getMingle());
         this.operatorId = mingleLog.getOperatorId();
         this.operatorName = mingleLog.getOperatorName();
         this.targetType = mingleLog.getTargetType();

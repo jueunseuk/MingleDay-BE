@@ -1,5 +1,6 @@
 package returns.mingleday.util;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -36,20 +37,45 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String token = header.substring(7);
 
-        if (StringUtils.hasText(token) && jwtTokenProvider.isValidToken(token)) {
+        if (StringUtils.hasText(token)) {
             try {
-                String userId = jwtTokenProvider.getUserId(token);
-                UserDetails userDetails = mingleDayUserDetailsService.loadUserByUsername(userId);
+                if (jwtTokenProvider.isValidToken(token)) {
+                    String userId = jwtTokenProvider.getUserId(token);
+                    UserDetails userDetails = mingleDayUserDetailsService.loadUserByUsername(userId);
 
-                UsernamePasswordAuthenticationToken authentication =
-                        new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authentication =
+                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
-                authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                    authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                log.info("[JWT-Filter] 인증 성공: {}", userId);
+                    log.info("[JWT-Filter] Success to Authentication: {}", userId);
+                }
+            } catch (ExpiredJwtException e) {
+                log.warn("[JWT-Filter] Token Expired");
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("""
+            {
+              "code": "EXPIRED_TOKEN",
+              "message": "토큰 만료"
+            }
+        """);
+                return;
+
             } catch (Exception e) {
-                log.error("[JWT-Filter] 사용자 인증 설정 실패: {}", e.getMessage());
+                log.error("[JWT-Filter] Invalid Token");
+
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.setContentType("application/json;charset=UTF-8");
+                response.getWriter().write("""
+            {
+              "code": "INVALID_TOKEN",
+              "message": "유효하지 않은 토큰"
+            }
+        """);
+                return;
             }
         }
 

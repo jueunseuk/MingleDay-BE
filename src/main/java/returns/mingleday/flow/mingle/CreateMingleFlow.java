@@ -37,7 +37,7 @@ public class CreateMingleFlow {
         log.info("Create new mingle - owner: {}, mingleId: {}", userId, mingle.getMingleId());
 
         MingleMember mingleMember = mingleMemberService.createMingleMember(mingle, user);
-        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.CREATE);
+        createMingleLogService.execute(mingle, mingleMember, mingle, MingleLogType.CREATE);
 
         minglePermissionService.createFullPermissions(mingleMember, true);
         log.info("Create full permissions for member: {}", mingleMember.getMingleMemberId());

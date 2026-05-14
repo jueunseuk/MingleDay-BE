@@ -5,14 +5,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import returns.mingleday.flow.mingle.CreateMingleFlow;
-import returns.mingleday.flow.mingle.UpdateMingleInfoFlow;
-import returns.mingleday.flow.mingle.UpdateMingleProfileFlow;
+import returns.mingleday.flow.mingle.*;
 import returns.mingleday.global.authentication.AuthUserDetail;
-import returns.mingleday.model.mingle.CreateMingleRequest;
-import returns.mingleday.model.mingle.CreateMingleResponse;
-import returns.mingleday.model.mingle.MinglesResponse;
-import returns.mingleday.model.mingle.UpdateMingleRequest;
+import returns.mingleday.model.mingle.*;
 import returns.mingleday.response.success.SuccessResponse;
 import returns.mingleday.service.mingle.MingleService;
 
@@ -23,10 +18,12 @@ import java.util.List;
 @RequestMapping("/api/v1/mingles")
 public class MingleController {
 
+    private final MingleService mingleService;
     private final CreateMingleFlow createMingleFlow;
     private final UpdateMingleInfoFlow updateMingleInfoFlow;
     private final UpdateMingleProfileFlow updateMingleProfileFlow;
-    private final MingleService mingleService;
+    private final SearchMingleInformationFlow searchMingleInformationFlow;
+    private final UpdateMingleSettingFlow updateMingleSettingFlow;
 
     @PostMapping
     public ResponseEntity<CreateMingleResponse> createMingle(@AuthenticationPrincipal AuthUserDetail user, @RequestBody CreateMingleRequest request) {
@@ -34,7 +31,7 @@ public class MingleController {
         return ResponseEntity.ok(new CreateMingleResponse(mingleId));
     }
 
-    @PatchMapping("/{mingleId}")
+    @PatchMapping("/{mingleId}/info")
     public ResponseEntity<SuccessResponse<String>> updateMingle(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody UpdateMingleRequest request) {
         updateMingleInfoFlow.updateMingleInfo(user.getUserId(), mingleId, request);
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle"));
@@ -46,9 +43,26 @@ public class MingleController {
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
     }
 
+    @PatchMapping("/{mingleId}/setting")
+    public ResponseEntity<SuccessResponse<String>> updateMingleSetting(
+            @AuthenticationPrincipal AuthUserDetail user,
+            @PathVariable Integer mingleId,
+            @RequestParam String option,
+            @RequestParam Boolean value
+    ) {
+        updateMingleSettingFlow.updateMingleSetting(user.getUserId(), mingleId, option, value);
+        return ResponseEntity.ok(SuccessResponse.success("Success to update mingle setting"));
+    }
+
     @GetMapping
     public ResponseEntity<List<MinglesResponse>> getAllMyMingles(@AuthenticationPrincipal AuthUserDetail user) {
         List<MinglesResponse> responses = mingleService.getMinglesByUser(user.getUserId());
         return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/{mingleId}")
+    public ResponseEntity<MingleResponse> getMingle(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
+        MingleResponse response = searchMingleInformationFlow.searchMingleInformation(user.getUserId(), mingleId);
+        return ResponseEntity.ok(response);
     }
 }

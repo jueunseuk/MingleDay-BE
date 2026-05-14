@@ -8,24 +8,41 @@ import returns.mingleday.response.exception.BaseException;
 
 @Component
 public class UpdateLogStrategy implements CreateMingleLogInterface {
+
     @Override
     public MingleLog create(Mingle mingle, MingleMember operator, Object target) {
-        if(!(target instanceof Schedule schedule)) {
-            throw new BaseException(MingleLogExceptionCode.INVALID_LOG_TARGET);
+        if (target instanceof Schedule schedule) {
+            String content = operator.getDisplayName() + "님이 "
+                    + schedule.getTitle() + " 일정을 수정했습니다.";
+
+            return MingleLog.ofTarget(
+                    mingle,
+                    operator.getMingleMemberId(),
+                    operator.getDisplayName(),
+                    TargetType.SCHEDULE,
+                    schedule.getScheduleId(),
+                    schedule.getTitle(),
+                    content,
+                    MingleLogType.MODIFY
+            );
         }
 
-        String content = operator.getDisplayName() + "님이 " + schedule.getTitle() + " 일정을 수정했습니다.";
+        if (target instanceof Mingle updatedMingle) {
+            String content = operator.getDisplayName() + "님이 밍글 정보를 수정했습니다.";
 
-        return MingleLog.ofTarget(
-                mingle,
-                operator.getMingleMemberId(),
-                operator.getDisplayName(),
-                TargetType.SCHEDULE,
-                schedule.getScheduleId(),
-                schedule.getTitle(),
-                content,
-                MingleLogType.MODIFY
-        );
+            return MingleLog.ofTarget(
+                    updatedMingle,
+                    operator.getMingleMemberId(),
+                    operator.getDisplayName(),
+                    TargetType.MINGLE,
+                    Long.valueOf(updatedMingle.getMingleId()),
+                    updatedMingle.getName(),
+                    content,
+                    MingleLogType.MODIFY
+            );
+        }
+
+        throw new BaseException(MingleLogExceptionCode.INVALID_LOG_TARGET);
     }
 
     @Override
