@@ -46,7 +46,7 @@ public class UpdateMingleInfoFlow {
 
         mingleService.updateMingle(mingle, request.getName(), request.getDescription());
 
-        createMingleLogService.execute(mingle, mingleMember, TargetType.MINGLE, MingleLogType.MODIFY);
+        createMingleLogService.execute(mingle, mingleMember, mingle, MingleLogType.MODIFY);
         log.info("Update a mingle information - userId: {}, mingleId: {}", userId, mingleId);
 
         mingleRepository.save(mingle);

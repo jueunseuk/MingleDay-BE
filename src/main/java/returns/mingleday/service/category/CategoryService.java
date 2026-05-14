@@ -73,7 +73,7 @@ public class CategoryService {
         ColorUtil.validateHex(request.getBackgroundColor());
 
         double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
-        if (contrast < 4.5) {
+        if (contrast < 1) {
             throw new BaseException(CategoryExceptionCode.TOO_SIMILAR_WITH_COLORS);
         }
 
@@ -109,7 +109,7 @@ public class CategoryService {
         ColorUtil.validateHex(request.getBackgroundColor());
 
         double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
-        if (contrast < 4.5) {
+        if (contrast < 1) {
             throw new BaseException(CategoryExceptionCode.TOO_SIMILAR_WITH_COLORS);
         }
 
