@@ -39,9 +39,9 @@ public class UpdateMingleSettingFlow {
         }
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
 
-        if(option.equals("realname")) {
+        if(option.equalsIgnoreCase("realname")) {
             mingle.updateUseRealname(value);
-        } else if(option.equals("permission")) {
+        } else if(option.equalsIgnoreCase("permission")) {
             mingle.updateUsePermission(value);
         } else {
             throw new BaseException(MingleExceptionCode.INVALID_MINGLE_SETTING_OPTION);
