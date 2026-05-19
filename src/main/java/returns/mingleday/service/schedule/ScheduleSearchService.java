@@ -13,6 +13,7 @@ import returns.mingleday.model.schedule.*;
 import returns.mingleday.repository.ScheduleInstanceRepository;
 import returns.mingleday.repository.ScheduleRepository;
 import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.code.SearchExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MingleService;
@@ -20,7 +21,9 @@ import returns.mingleday.service.user.UserService;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -127,5 +130,36 @@ public class ScheduleSearchService {
                         new SimpleScheduleInstanceResponse(scheduleInstance.getNextScheduleInstance())
                 )
         );
+    }
+
+    public List<SearchScheduleInstanceResponse> searchByKeyword(Integer userId, String keyword) {
+        User user = userService.findUserByUserId(userId);
+
+        if(keyword == null || keyword.isEmpty()) {
+            throw new BaseException(SearchExceptionCode.TOO_SHORT_KEYWORD);
+        }
+
+        List<Mingle> mingles = mingleService.getMinglesByUser(userId);
+        if(mingles.isEmpty()) {
+            throw new BaseException(SearchExceptionCode.NO_MINGLE_EXISTS_TO_RETRIEVE_THE_SCHEDULE);
+        }
+
+        List<ScheduleInstance> scheduleInstances = new ArrayList<>();
+        for(Mingle mingle : mingles) {
+            scheduleInstances.addAll(scheduleInstanceRepository.findAllByMingleAndKeyword(mingle, keyword));
+        }
+
+        scheduleInstances = scheduleInstances.stream().filter(schedule ->
+                        !schedule.getSchedule().getIsPrivate() || schedule.getSchedule().getOwner().equals(user)
+                ).collect(Collectors.toList());
+
+        scheduleInstances.sort((o1, o2) -> {
+            if(o1.getStartAt() == o2.getStartAt()) {
+                return o1.getEndAt().compareTo(o2.getEndAt());
+            }
+            return o2.getStartAt().compareTo(o1.getStartAt());
+        });
+
+        return scheduleInstances.stream().map(SearchScheduleInstanceResponse::new).toList();
     }
 }
