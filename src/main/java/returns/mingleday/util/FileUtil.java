@@ -24,7 +24,7 @@ public class FileUtil {
     private String uploadDir;
 
     public String[] storeFile(MultipartFile file, ImageType imageType) {
-        String relativePath = "";
+        String relativePath;
         switch (imageType) {
             case GROUP_PROFILE -> relativePath = "group/profile/";
             case SCHEDULE_BEFORE -> relativePath = "schedule/before/";
@@ -42,7 +42,7 @@ public class FileUtil {
 
             file.transferTo(targetLocation.toFile()); // save to device
             log.info("Success to save image - saveDir: {}", targetLocation);
-            return new String[] {relativePath, targetLocation.toString()};
+            return new String[] {relativePath, fileName};
         } catch (IOException e) {
             log.warn("Error saving file");
             throw new BaseException(ImageExceptionCode.IMAGE_UPLOAD_FAILED);

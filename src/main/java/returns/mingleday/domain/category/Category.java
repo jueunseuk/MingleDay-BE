@@ -10,6 +10,7 @@ import returns.mingleday.global.domain.BaseTime;
 import returns.mingleday.response.code.CategoryExceptionCode;
 import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
+import returns.mingleday.util.ColorUtil;
 import returns.mingleday.util.StringParser;
 
 @Entity
@@ -78,6 +79,12 @@ public class Category extends BaseTime {
     }
 
     public static void isValidColor(String color) {
+        if(color.charAt(0) == '#' && color.length() == 7) {
+            color = color.substring(1);
+        }
+
+        ColorUtil.validateHex(color);
+
         if(color == null || color.length() != 6) {
             throw new BaseException(CategoryExceptionCode.COLOR_CODE_MUST_BE_SIX_DIGITS);
         }

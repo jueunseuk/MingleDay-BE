@@ -35,4 +35,7 @@ public interface ScheduleInstanceRepository extends JpaRepository<ScheduleInstan
             "AND s.title LIKE %:title% " +
             "ORDER BY si.startAt ASC")
     List<ScheduleInstance> findAllByUserAndMonthAndTitle(User user, LocalDateTime start, LocalDateTime end, String title);
+
+    @Query("select si from ScheduleInstance si where si.schedule.mingle = :mingle and si.schedule.title like %:keyword% order by si.startAt desc, si.endAt asc")
+    List<ScheduleInstance> findAllByMingleAndKeyword(Mingle mingle, String keyword);
 }

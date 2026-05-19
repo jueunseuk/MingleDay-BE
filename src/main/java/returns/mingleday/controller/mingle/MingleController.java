@@ -22,8 +22,8 @@ public class MingleController {
     private final CreateMingleFlow createMingleFlow;
     private final UpdateMingleInfoFlow updateMingleInfoFlow;
     private final UpdateMingleProfileFlow updateMingleProfileFlow;
-    private final SearchMingleInformationFlow searchMingleInformationFlow;
     private final UpdateMingleSettingFlow updateMingleSettingFlow;
+    private final SearchMingleInformationFlow searchMingleInformationFlow;
 
     @PostMapping
     public ResponseEntity<CreateMingleResponse> createMingle(@AuthenticationPrincipal AuthUserDetail user, @RequestBody CreateMingleRequest request) {
@@ -38,9 +38,13 @@ public class MingleController {
     }
 
     @PatchMapping("/{mingleId}/profile")
-    public ResponseEntity<SuccessResponse<String>> updateMingleProfile(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody MultipartFile request) {
-        updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, request);
-        return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
+    public ResponseEntity<SuccessResponse<String>> updateMingleProfile(
+            @AuthenticationPrincipal AuthUserDetail user,
+            @PathVariable Integer mingleId,
+            @RequestParam MultipartFile mingleImage
+    ) {
+        String imageUrl = updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, mingleImage);
+        return ResponseEntity.ok(SuccessResponse.success(imageUrl));
     }
 
     @PatchMapping("/{mingleId}/setting")
@@ -56,7 +60,7 @@ public class MingleController {
 
     @GetMapping
     public ResponseEntity<List<MinglesResponse>> getAllMyMingles(@AuthenticationPrincipal AuthUserDetail user) {
-        List<MinglesResponse> responses = mingleService.getMinglesByUser(user.getUserId());
+        List<MinglesResponse> responses = mingleService.getMinglesResponseByUser(user.getUserId());
         return ResponseEntity.ok(responses);
     }
 
