@@ -24,7 +24,7 @@ public class FileUtil {
     private String uploadDir;
 
     public String[] storeFile(MultipartFile file, ImageType imageType) {
-        String relativePath = "";
+        String relativePath;
         switch (imageType) {
             case GROUP_PROFILE -> relativePath = "group/profile/";
             case SCHEDULE_BEFORE -> relativePath = "schedule/before/";

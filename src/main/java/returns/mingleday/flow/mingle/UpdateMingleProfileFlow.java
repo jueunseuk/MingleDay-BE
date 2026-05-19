@@ -34,7 +34,7 @@ public class UpdateMingleProfileFlow {
     private final CreateMingleLogService createMingleLogService;
 
     @Transactional
-    public void updateMingleProfile(Integer userId, Integer mingleId, MultipartFile file) {
+    public String updateMingleProfile(Integer userId, Integer mingleId, MultipartFile file) {
         User user = userService.findUserByUserId(userId);
         Mingle mingle = mingleService.findMingleById(mingleId);
 
@@ -50,5 +50,7 @@ public class UpdateMingleProfileFlow {
         log.info("Update a mingle profile image - userId: {}, mingleId: {}", userId, mingleId);
 
         mingleRepository.save(mingle);
+
+        return image.getPath();
     }
 }
