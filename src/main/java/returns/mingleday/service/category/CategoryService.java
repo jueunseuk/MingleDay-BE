@@ -12,6 +12,7 @@ import returns.mingleday.domain.mingle.MingleType;
 import returns.mingleday.domain.mingle.PermissionType;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.user.User;
+import returns.mingleday.global.constant.MingleDayConstant;
 import returns.mingleday.model.category.CategoryResponse;
 import returns.mingleday.model.category.UpsertCategoryRequest;
 import returns.mingleday.repository.CategoryRepository;
@@ -69,8 +70,13 @@ public class CategoryService {
             throw new BaseException(GlobalExceptionCode.BAD_REQUEST_FOR_MISMATCH);
         }
 
-        ColorUtil.validateHex(request.getTextColor());
-        ColorUtil.validateHex(request.getBackgroundColor());
+        if(request.getBackgroundColor() == null || request.getBackgroundColor().isEmpty()) {
+            request.setBackgroundColor(MingleDayConstant.PRIMARY_COLOR);
+        }
+
+        if(request.getTextColor() == null || request.getTextColor().isEmpty()) {
+            request.setTextColor(MingleDayConstant.PRIMARY_COLOR);
+        }
 
         double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
         if (contrast < 1) {
@@ -105,8 +111,13 @@ public class CategoryService {
             throw new BaseException(GlobalExceptionCode.BAD_REQUEST_FOR_MISMATCH);
         }
 
-        ColorUtil.validateHex(request.getTextColor());
-        ColorUtil.validateHex(request.getBackgroundColor());
+        if(request.getBackgroundColor() == null || request.getBackgroundColor().isEmpty()) {
+            request.setBackgroundColor(MingleDayConstant.PRIMARY_COLOR);
+        }
+
+        if(request.getTextColor() == null || request.getTextColor().isEmpty()) {
+            request.setTextColor(MingleDayConstant.PRIMARY_COLOR);
+        }
 
         double contrast = ColorUtil.getContrastRatio(request.getTextColor(), request.getBackgroundColor());
         if (contrast < 1) {

@@ -31,7 +31,7 @@ public class CategoryController {
         return ResponseEntity.ok(SuccessResponse.success("Category created successfully"));
     }
 
-    @PutMapping("/{categoryId}")
+    @PatchMapping("/{categoryId}")
     public ResponseEntity<SuccessResponse<String>> modifyCategory(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @PathVariable Long categoryId, @RequestBody UpsertCategoryRequest request) {
         categoryService.modifyCategory(user.getUserId(), mingleId, categoryId, request);
         return ResponseEntity.ok(SuccessResponse.success("Success to modify category"));

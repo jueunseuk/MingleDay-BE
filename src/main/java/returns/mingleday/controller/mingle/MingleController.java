@@ -38,8 +38,12 @@ public class MingleController {
     }
 
     @PatchMapping("/{mingleId}/profile")
-    public ResponseEntity<SuccessResponse<String>> updateMingleProfile(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId, @RequestBody MultipartFile request) {
-        updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, request);
+    public ResponseEntity<SuccessResponse<String>> updateMingleProfile(
+            @AuthenticationPrincipal AuthUserDetail user,
+            @PathVariable Integer mingleId,
+            @RequestParam MultipartFile mingleImage
+    ) {
+        updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, mingleImage);
         return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
     }
 

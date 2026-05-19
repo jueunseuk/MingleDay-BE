@@ -25,10 +25,13 @@ public class UserController {
     private final ScheduleSearchService scheduleSearchService;
     private final UpdateProfileImageFlow updateProfileImageFlow;
 
-    @PostMapping("/profile/image")
-    public ResponseEntity<String> updateProfileImage(@AuthenticationPrincipal AuthUserDetail user, @RequestBody MultipartFile profileImage) {
+    @PatchMapping("/profile/image")
+    public ResponseEntity<SuccessResponse<String>> updateProfileImage(
+            @AuthenticationPrincipal AuthUserDetail user,
+            @RequestParam MultipartFile profileImage
+    ) {
         String imageUrl = updateProfileImageFlow.updateProfileImage(user.getUserId(), profileImage);
-        return ResponseEntity.ok(imageUrl);
+        return ResponseEntity.ok(SuccessResponse.success(imageUrl));
     }
 
     @PatchMapping("/profile/info")
