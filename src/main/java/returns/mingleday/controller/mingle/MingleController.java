@@ -22,8 +22,8 @@ public class MingleController {
     private final CreateMingleFlow createMingleFlow;
     private final UpdateMingleInfoFlow updateMingleInfoFlow;
     private final UpdateMingleProfileFlow updateMingleProfileFlow;
-    private final SearchMingleInformationFlow searchMingleInformationFlow;
     private final UpdateMingleSettingFlow updateMingleSettingFlow;
+    private final SearchMingleInformationFlow searchMingleInformationFlow;
 
     @PostMapping
     public ResponseEntity<CreateMingleResponse> createMingle(@AuthenticationPrincipal AuthUserDetail user, @RequestBody CreateMingleRequest request) {
@@ -56,7 +56,7 @@ public class MingleController {
 
     @GetMapping
     public ResponseEntity<List<MinglesResponse>> getAllMyMingles(@AuthenticationPrincipal AuthUserDetail user) {
-        List<MinglesResponse> responses = mingleService.getMinglesByUser(user.getUserId());
+        List<MinglesResponse> responses = mingleService.getMinglesResponseByUser(user.getUserId());
         return ResponseEntity.ok(responses);
     }
 

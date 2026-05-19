@@ -76,9 +76,12 @@ public class MingleService {
         mingleRepository.delete(mingle);
     }
 
-    public List<MinglesResponse> getMinglesByUser(Integer userId) {
+    public List<MinglesResponse> getMinglesResponseByUser(Integer userId) {
+        return getMinglesByUser(userId).stream().map(MinglesResponse::new).toList();
+    }
+
+    public List<Mingle> getMinglesByUser(Integer userId) {
         User user = userService.findUserByUserId(userId);
-        List<Mingle> mingles = mingleMemberRepository.findAllMingleByUser(user);
-        return mingles.stream().map(MinglesResponse::new).toList();
+        return mingleMemberRepository.findAllMingleByUser(user);
     }
 }
