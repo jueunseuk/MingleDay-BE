@@ -42,7 +42,7 @@ public class FileUtil {
 
             file.transferTo(targetLocation.toFile()); // save to device
             log.info("Success to save image - saveDir: {}", targetLocation);
-            return new String[] {relativePath, targetLocation.toString()};
+            return new String[] {relativePath, fileName};
         } catch (IOException e) {
             log.warn("Error saving file");
             throw new BaseException(ImageExceptionCode.IMAGE_UPLOAD_FAILED);

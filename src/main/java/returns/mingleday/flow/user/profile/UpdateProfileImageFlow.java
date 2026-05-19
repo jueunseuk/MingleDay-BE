@@ -2,6 +2,7 @@ package returns.mingleday.flow.user.profile;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,6 +17,9 @@ import returns.mingleday.service.user.UserService;
 @Slf4j
 public class UpdateProfileImageFlow {
 
+    @Value("${app.image-base-url}")
+    private String imageBaseUrl;
+
     private final UserService userService;
     private final ImageService imageService;
 
@@ -25,9 +29,10 @@ public class UpdateProfileImageFlow {
 
         Image image = imageService.uploadImage(profileImage, userId.longValue(), ImageType.USER_PROFILE);
 
-        user.updateProfileUrl(image.getPath());
+        String profileUrl = imageBaseUrl + "/images/" + image.getPath() + image.getStoredName();
+        user.updateProfileUrl(profileUrl);
 
         log.info("Success to update profile image - userId: {}", userId);
-        return image.getPath();
+        return profileUrl;
     }
 }
