@@ -20,12 +20,12 @@ public class ImageService {
     public Image uploadImage(MultipartFile file, Long targetId, ImageType imageType) {
         Image.validSize(file.getSize());
 
-        String[] path = fileUtil.storeFile(file, imageType);
+        String[] fileInfo  = fileUtil.storeFile(file, imageType);
 
         Image image = Image.of(
                 file.getOriginalFilename(),
-                path[1],
-                path[0],
+                fileInfo[1],
+                fileInfo[0],
                 file.getSize(),
                 targetId,
                 imageType

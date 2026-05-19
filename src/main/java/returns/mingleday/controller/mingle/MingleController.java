@@ -43,8 +43,8 @@ public class MingleController {
             @PathVariable Integer mingleId,
             @RequestParam MultipartFile mingleImage
     ) {
-        updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, mingleImage);
-        return ResponseEntity.ok(SuccessResponse.success("Success to update mingle representative profile image"));
+        String imageUrl = updateMingleProfileFlow.updateMingleProfile(user.getUserId(), mingleId, mingleImage);
+        return ResponseEntity.ok(SuccessResponse.success(imageUrl));
     }
 
     @PatchMapping("/{mingleId}/setting")
