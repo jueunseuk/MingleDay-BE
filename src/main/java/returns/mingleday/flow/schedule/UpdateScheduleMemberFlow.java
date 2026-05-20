@@ -16,6 +16,7 @@ import returns.mingleday.response.code.GlobalExceptionCode;
 import returns.mingleday.response.exception.BaseException;
 import returns.mingleday.service.mingle.MingleMemberService;
 import returns.mingleday.service.mingle.MinglePermissionService;
+import returns.mingleday.service.mingle.MingleService;
 import returns.mingleday.service.schedule.ScheduleMemberService;
 import returns.mingleday.service.schedule.ScheduleSearchService;
 import returns.mingleday.service.user.UserService;
@@ -29,6 +30,7 @@ import java.util.List;
 public class UpdateScheduleMemberFlow {
 
     private final UserService userService;
+    private final MingleService mingleService;
     private final MingleMemberService mingleMemberService;
     private final ScheduleSearchService scheduleSearchService;
     private final MinglePermissionService minglePermissionService;
@@ -36,10 +38,14 @@ public class UpdateScheduleMemberFlow {
     private final ScheduleMemberRepository scheduleMemberRepository;
 
     @Transactional
-    public void updateScheduleMember(Integer userId, Long scheduleId, List<ScheduleMemberRequest> request) {
+    public void updateScheduleMember(Integer userId, Integer mingleId, Long scheduleId, List<ScheduleMemberRequest> request) {
         User user = userService.findUserByUserId(userId);
         Schedule schedule = scheduleSearchService.findScheduleById(scheduleId);
-        Mingle mingle = schedule.getMingle();
+        Mingle mingle = mingleService.findMingleById(mingleId);
+        if(!mingle.equals(schedule.getMingle())) {
+            throw new BaseException(GlobalExceptionCode.INVALID_REQUEST);
+        }
+
         MingleMember mingleMember = mingleMemberService.getMingleMember(mingle, user);
 
         if(mingle.getUsePermission() &&
