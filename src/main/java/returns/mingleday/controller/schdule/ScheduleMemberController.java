@@ -21,10 +21,11 @@ public class ScheduleMemberController {
     @PatchMapping
     public ResponseEntity<SuccessResponse<String>> updateScheduleMember(
         @AuthenticationPrincipal AuthUserDetail user,
+        @PathVariable Integer mingleId,
         @PathVariable Long scheduleId,
         @RequestBody List<ScheduleMemberRequest> request
     ) {
-        updateScheduleMemberFlow.updateScheduleMember(user.getUserId(), scheduleId, request);
+        updateScheduleMemberFlow.updateScheduleMember(user.getUserId(), mingleId, scheduleId, request);
         return ResponseEntity.ok(SuccessResponse.success("Success to update schedule member"));
     }
 }
