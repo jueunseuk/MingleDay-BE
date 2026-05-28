@@ -17,9 +17,9 @@ public class AnniversaryItemWithType {
         this.dateName = anniversaryItem.getDateName();
         this.isHoliday = anniversaryItem.getIsHoliday().equalsIgnoreCase("Y");
         this.locdate = LocalDate.of(
-                Integer.parseInt(anniversaryItem.getLocdate().substring(0, 2)),
-                Integer.parseInt(anniversaryItem.getLocdate().substring(2, 4)),
-                Integer.parseInt(anniversaryItem.getLocdate().substring(4, 6))
+                Integer.parseInt(anniversaryItem.getLocdate().substring(0, 4)),
+                Integer.parseInt(anniversaryItem.getLocdate().substring(4, 6)),
+                Integer.parseInt(anniversaryItem.getLocdate().substring(6, 8))
         );
         this.seq = Integer.parseInt(anniversaryItem.getSeq());
     }
