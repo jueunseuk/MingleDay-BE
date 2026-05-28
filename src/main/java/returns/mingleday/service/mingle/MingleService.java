@@ -80,6 +80,10 @@ public class MingleService {
         return getMinglesByUser(userId).stream().map(MinglesResponse::new).toList();
     }
 
+    public List<SimpleMingleResponse> getSimpleMingleResponseByUser(Integer userId) {
+        return getMinglesByUser(userId).stream().map(SimpleMingleResponse::new).toList();
+    }
+
     public List<Mingle> getMinglesByUser(Integer userId) {
         User user = userService.findUserByUserId(userId);
         return mingleMemberRepository.findAllMingleByUser(user);

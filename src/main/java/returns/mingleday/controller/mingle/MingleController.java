@@ -64,6 +64,12 @@ public class MingleController {
         return ResponseEntity.ok(responses);
     }
 
+    @GetMapping("/simple")
+    public ResponseEntity<List<SimpleMingleResponse>> getAllMyMinglesSimple(@AuthenticationPrincipal AuthUserDetail user) {
+        List<SimpleMingleResponse> responses = mingleService.getSimpleMingleResponseByUser(user.getUserId());
+        return ResponseEntity.ok(responses);
+    }
+
     @GetMapping("/{mingleId}")
     public ResponseEntity<MingleResponse> getMingle(@AuthenticationPrincipal AuthUserDetail user, @PathVariable Integer mingleId) {
         MingleResponse response = searchMingleInformationFlow.searchMingleInformation(user.getUserId(), mingleId);

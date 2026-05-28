@@ -23,6 +23,7 @@ public class SecurityConstant {
             "/api/v1/auth/password/reset",
             "/api/v1/mingles/invitation/accept/**",
             "/images/**",
+            "/api/v1/anniversary*",
             "/api/v1/test/ping"
     );
 }
