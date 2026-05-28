@@ -48,7 +48,7 @@ public class AnniversaryService {
                         AnniversaryApiResponse.class
                 );
 
-        if(response == null || response.getBody() == null || response.getBody().getItems() == null) {
+        if(response == null || response.getBody() == null || response.getBody().getItems() == null || response.getBody().getItems().getItem().isEmpty()) {
             return Collections.emptyList();
         }
 
