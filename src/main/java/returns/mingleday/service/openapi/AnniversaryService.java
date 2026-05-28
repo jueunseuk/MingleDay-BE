@@ -48,8 +48,6 @@ public class AnniversaryService {
                         AnniversaryApiResponse.class
                 );
 
-        log.info("Anniversary response: {}", response);
-
         if(response == null || response.getBody() == null || response.getBody().getItems() == null) {
             return Collections.emptyList();
         }
