@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import returns.mingleday.model.anniversary.AnniversaryItem;
+import returns.mingleday.model.anniversary.AnniversaryItemWithType;
 import returns.mingleday.service.openapi.AnniversaryService;
 
 import java.util.List;
@@ -19,11 +19,11 @@ public class AnniversaryController {
     private final AnniversaryService anniversaryService;
 
     @GetMapping
-    public ResponseEntity<List<AnniversaryItem>> getAnniversary(
+    public ResponseEntity<List<AnniversaryItemWithType>> getAnniversary(
             @RequestParam Integer year,
             @RequestParam Integer month
     ) {
-        List<AnniversaryItem> responses = anniversaryService.getAnniversary(year, month);
+        List<AnniversaryItemWithType> responses = anniversaryService.getAnniversary(year, month);
         return ResponseEntity.ok(responses);
     }
 }

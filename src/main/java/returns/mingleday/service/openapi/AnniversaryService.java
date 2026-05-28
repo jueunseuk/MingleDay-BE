@@ -6,7 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import returns.mingleday.model.anniversary.AnniversaryApiResponse;
-import returns.mingleday.model.anniversary.AnniversaryItem;
+import returns.mingleday.model.anniversary.AnniversaryItemWithType;
 
 import java.time.LocalDate;
 import java.util.Collections;
@@ -25,7 +25,7 @@ public class AnniversaryService {
 
     private final RestTemplate restTemplate = new RestTemplate();
 
-    public List<AnniversaryItem> getAnniversary(Integer year, Integer month) {
+    public List<AnniversaryItemWithType> getAnniversary(Integer year, Integer month) {
         if(year == null) {
             year = LocalDate.now().getYear();
         }
@@ -56,6 +56,9 @@ public class AnniversaryService {
 
         return response.getBody()
                 .getItems()
-                .getItem();
+                .getItem()
+                .stream()
+                .map(AnniversaryItemWithType::new)
+                .toList();
     }
 }
