@@ -40,8 +40,6 @@ public class AnniversaryService {
                         + "&solYear=" + year
                         + "&solMonth=" + String.format("%02d", month);
 
-        log.info("Anniversary url: {}", url);
-
         AnniversaryApiResponse response =
                 restTemplate.getForObject(
                         url,

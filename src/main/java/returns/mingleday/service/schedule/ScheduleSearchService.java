@@ -92,8 +92,11 @@ public class ScheduleSearchService {
 
     public List<MonthlyScheduleResponse> findMySchedules(Integer userId, Integer year, Integer month, String keyword) {
         User user = userService.findUserByUserId(userId);
-        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
-        LocalDateTime end = LocalDate.of(year, month, 1).atTime(23, 59, 0);
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDateTime start = firstDay.atStartOfDay();
+        LocalDateTime end = firstDay
+                .withDayOfMonth(firstDay.lengthOfMonth())
+                .atTime(23, 59, 59);
 
         List<ScheduleInstance> scheduleInstances;
         if(keyword == null || keyword.isEmpty()) {
