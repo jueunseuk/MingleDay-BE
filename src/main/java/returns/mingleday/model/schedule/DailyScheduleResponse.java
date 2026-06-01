@@ -8,6 +8,7 @@ import returns.mingleday.model.category.SimpleCategoryResponse;
 public class DailyScheduleResponse {
     // 리스트 형태로 하루 치의 일정을 보여주는 DTO
     private Long scheduleId;
+    private Integer mingleId;
     private String title;
     private String content;
     private Boolean isRepeated;
@@ -17,6 +18,7 @@ public class DailyScheduleResponse {
 
     public DailyScheduleResponse(Schedule schedule, SimpleScheduleInstanceResponse scheduleInstance) {
         this.scheduleId = schedule.getScheduleId();
+        this.mingleId = schedule.getMingle().getMingleId();
         this.title = schedule.getTitle();
         this.content = schedule.getContent();
         this.isRepeated = schedule.getIsRepeated();
