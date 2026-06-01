@@ -165,4 +165,19 @@ public class ScheduleSearchService {
 
         return scheduleInstances.stream().map(SearchScheduleInstanceResponse::new).toList();
     }
+
+    public List<DailyScheduleResponse> findDailySchedulesWithoutMingle(Integer userId, Integer year, Integer month, Integer day) {
+        User user = userService.findUserByUserId(userId);
+        LocalDate date = LocalDate.of(year, month, day);
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+        List<ScheduleInstance> scheduleInstances = scheduleInstanceRepository.findAllByOneDay(user, start, end);
+        return scheduleInstances.stream().map(si ->
+                new DailyScheduleResponse(
+                        si.getSchedule(),
+                        new SimpleScheduleInstanceResponse(si)
+                )
+        ).toList();
+    }
 }

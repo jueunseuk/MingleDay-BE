@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import returns.mingleday.flow.user.profile.UpdateProfileImageFlow;
 import returns.mingleday.global.authentication.AuthUserDetail;
+import returns.mingleday.model.schedule.DailyScheduleResponse;
 import returns.mingleday.model.schedule.MonthlyScheduleResponse;
 import returns.mingleday.model.user.UpdateProfileInfoRequest;
 import returns.mingleday.model.user.MyPageUserResponse;
@@ -40,7 +41,7 @@ public class UserController {
         return ResponseEntity.ok(SuccessResponse.success("Success to update profile info"));
     }
 
-    @GetMapping("/schedules/me")
+    @GetMapping("/schedules/me/monthly")
     public ResponseEntity<List<MonthlyScheduleResponse>> getSchedule(
             @AuthenticationPrincipal AuthUserDetail user,
             @RequestParam Integer year,
@@ -48,6 +49,17 @@ public class UserController {
             @RequestParam String keyword
     ) {
         List<MonthlyScheduleResponse> response = scheduleSearchService.findMySchedules(user.getUserId(), year, month, keyword);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/schedules/me/daily")
+    public ResponseEntity<List<DailyScheduleResponse>> getDailySchedules(
+            @AuthenticationPrincipal AuthUserDetail user,
+            @RequestParam Integer year,
+            @RequestParam Integer month,
+            @RequestParam Integer day
+    ) {
+        List<DailyScheduleResponse> response = scheduleSearchService.findDailySchedulesWithoutMingle(user.getUserId(), year, month, day);
         return ResponseEntity.ok(response);
     }
 
