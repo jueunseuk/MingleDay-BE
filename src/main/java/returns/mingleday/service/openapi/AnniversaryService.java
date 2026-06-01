@@ -40,17 +40,17 @@ public class AnniversaryService {
                         + "&solYear=" + year
                         + "&solMonth=" + String.format("%02d", month);
 
-        log.info("Anniversary url: {}", url);
-
         AnniversaryApiResponse response =
                 restTemplate.getForObject(
                         url,
                         AnniversaryApiResponse.class
                 );
 
-        log.info("Anniversary response: {}", response);
-
-        if(response == null || response.getBody() == null || response.getBody().getItems() == null) {
+        if (response == null
+                || response.getBody() == null
+                || response.getBody().getItems() == null
+                || response.getBody().getItems().getItem() == null
+                || response.getBody().getItems().getItem().isEmpty()) {
             return Collections.emptyList();
         }
 
