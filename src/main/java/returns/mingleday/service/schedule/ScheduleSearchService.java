@@ -92,8 +92,11 @@ public class ScheduleSearchService {
 
     public List<MonthlyScheduleResponse> findMySchedules(Integer userId, Integer year, Integer month, String keyword) {
         User user = userService.findUserByUserId(userId);
-        LocalDateTime start = LocalDate.of(year, month, 1).atStartOfDay();
-        LocalDateTime end = LocalDate.of(year, month, 1).atTime(23, 59, 0);
+        LocalDate firstDay = LocalDate.of(year, month, 1);
+        LocalDateTime start = firstDay.atStartOfDay();
+        LocalDateTime end = firstDay
+                .withDayOfMonth(firstDay.lengthOfMonth())
+                .atTime(23, 59, 59);
 
         List<ScheduleInstance> scheduleInstances;
         if(keyword == null || keyword.isEmpty()) {
@@ -161,5 +164,20 @@ public class ScheduleSearchService {
         });
 
         return scheduleInstances.stream().map(SearchScheduleInstanceResponse::new).toList();
+    }
+
+    public List<DailyScheduleResponse> findDailySchedulesWithoutMingle(Integer userId, Integer year, Integer month, Integer day) {
+        User user = userService.findUserByUserId(userId);
+        LocalDate date = LocalDate.of(year, month, day);
+        LocalDateTime start = date.atStartOfDay();
+        LocalDateTime end = date.plusDays(1).atStartOfDay();
+
+        List<ScheduleInstance> scheduleInstances = scheduleInstanceRepository.findAllByOneDay(user, start, end);
+        return scheduleInstances.stream().map(si ->
+                new DailyScheduleResponse(
+                        si.getSchedule(),
+                        new SimpleScheduleInstanceResponse(si)
+                )
+        ).toList();
     }
 }

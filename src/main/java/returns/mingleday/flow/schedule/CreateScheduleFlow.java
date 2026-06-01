@@ -87,13 +87,13 @@ public class CreateScheduleFlow {
             if (start.isAfter(end)) {
                 throw new BaseException(GlobalExceptionCode.INVALID_VALUE_REQUEST);
             }
-            if(start.getDayOfYear() != end.getDayOfYear() && start.getYear() != end.getYear()) {
+            if (!start.toLocalDate().equals(end.toLocalDate())) {
                 throw new BaseException(ScheduleExceptionCode.ALLOWED_ONLY_SAMEDAY);
             }
 
             if (request.getIsAllDay()) {
                 start = start.toLocalDate().atStartOfDay();
-                end = start.toLocalDate().atTime(23, 59, 0);
+                end = end.toLocalDate().atTime(23, 59, 0);
             }
 
             // 인스턴스 반복 생성
@@ -156,13 +156,11 @@ public class CreateScheduleFlow {
                         }
 
                         LocalDateTime candidateEnd = candidateStart.plus(duration);
-
                         scheduleInstances.add(
                                 scheduleService.createRecurrenceScheduleInstance(schedule, candidateStart, candidateEnd)
                         );
 
                         cnt++;
-
                         if (cnt >= max) {
                             break;
                         }
@@ -311,7 +309,7 @@ public class CreateScheduleFlow {
 
         if (isAllDay) {
             start = start.toLocalDate().atStartOfDay();
-            end = start.toLocalDate().atTime(23, 59, 0);
+            end = end.toLocalDate().atTime(23, 59, 0);
         }
 
         return scheduleService.createSolidScheduleInstance(schedule, start, end);
