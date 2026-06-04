@@ -37,4 +37,8 @@ public class ScheduleMember {
                 .memo(memo)
                 .build();
     }
+
+    public void updateMemo(String memo) {
+        this.memo = memo;
+    }
 }

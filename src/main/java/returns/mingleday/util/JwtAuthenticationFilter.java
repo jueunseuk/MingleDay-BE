@@ -43,13 +43,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     String userId = jwtTokenProvider.getUserId(token);
                     UserDetails userDetails = mingleDayUserDetailsService.loadUserByUsername(userId);
 
-                    UsernamePasswordAuthenticationToken authentication =
-                            new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
 
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    log.info("[JWT-Filter] Success to Authentication: {}", userId);
+                    log.info("[JWT-Filter] Success to Authentication - userId:{}, email:{}", userId, userDetails.getUsername());
                 }
             } catch (ExpiredJwtException e) {
                 log.warn("[JWT-Filter] Token Expired");
