@@ -30,7 +30,7 @@ public class MingleLogService {
         User user = userService.findUserByUserId(userId);
 
         List<Mingle> mingles = mingleMemberService.getAllMingle(user);
-        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleInOrderByCreatedAt(mingles, PageableMaker.of("createdAt", PageableMaker.DESC));
+        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleIn(mingles, PageableMaker.of("createdAt", PageableMaker.DESC));
 
         return mingleLogs.stream().map(MyMingleLogResponse::new).toList();
     }
@@ -43,7 +43,7 @@ public class MingleLogService {
             throw new BaseException(GlobalExceptionCode.FORBIDDEN);
         }
 
-        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingleOrderByCreatedAt(mingle, PageableMaker.of("createdAt", PageableMaker.DESC));
+        List<MingleLog> mingleLogs = mingleLogRepository.findAllByMingle(mingle, PageableMaker.of("createdAt", PageableMaker.DESC));
 
         return mingleLogs.stream().map(MingleLogResponse::new).toList();
     }

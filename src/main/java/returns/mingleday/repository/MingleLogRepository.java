@@ -12,7 +12,7 @@ import java.util.List;
 public interface MingleLogRepository extends JpaRepository<MingleLog, Long> {
     void deleteAllByMingle(Mingle mingle);
 
-    List<MingleLog> findAllByMingleInOrderByCreatedAt(List<Mingle> mingles, Pageable createdAt);
+    List<MingleLog> findAllByMingleIn(List<Mingle> mingles, Pageable createdAt);
 
-    List<MingleLog> findAllByMingleOrderByCreatedAt(Mingle mingle, Pageable createdAt);
+    List<MingleLog> findAllByMingle(Mingle mingle, Pageable createdAt);
 }
