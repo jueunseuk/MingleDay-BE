@@ -9,11 +9,13 @@ public class ScheduleMemberResponse {
     private Long scheduleMemberId;
     private String name;
     private String memo;
+    private String profileUrl;
 
     public ScheduleMemberResponse(ScheduleMember scheduleMember) {
         if(scheduleMember == null) return;
         this.scheduleMemberId = scheduleMember.getScheduleMemberId();
         this.name = scheduleMember.getMingleMember().getDisplayName();
         this.memo = scheduleMember.getMemo();
+        this.profileUrl = scheduleMember.getMingleMember().getUser().getProfileUrl();
     }
 }
