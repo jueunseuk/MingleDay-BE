@@ -20,6 +20,7 @@
 - Authentication, Security & User Management
 
 # Architecture & Project Overview
+<img width="6220" height="4604" alt="System Architecture" src="https://github.com/user-attachments/assets/4aea6dcb-e6da-41c5-b6a7-d76317147f22" />
 
 The MingleDay-BE project is a Spring Boot–based backend application that provides APIs for a scheduling and group (“mingle”) management service. The architecture is centered around a REST API layer secured by Spring Security, a consistent response and exception model, and a set of infrastructural configurations that support CORS, authentication, persistence, and time auditing.  
 
