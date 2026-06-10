@@ -19,28 +19,9 @@
 - Scheduling & Calendar Module
 - Authentication, Security & User Management
 
-<details>
-<summary>Relevant source files</summary>
-
-The following files were used as context for generating this wiki page:
-
-- [build.gradle](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/build.gradle)
-- [settings.gradle](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/settings.gradle)
-- [src/main/java/returns/mingleday/MingleDayApplication.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/MingleDayApplication.java)
-- [src/main/java/returns/mingleday/config/SecurityConfig.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/config/SecurityConfig.java)
-- [src/main/java/returns/mingleday/config/WebConfig.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/config/WebConfig.java)
-- [src/main/java/returns/mingleday/global/domain/BaseTime.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/global/domain/BaseTime.java)
-- [src/main/java/returns/mingleday/response/exception/GlobalExceptionHandler.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/response/exception/GlobalExceptionHandler.java)
-- [src/main/java/returns/mingleday/response/ApiResponse.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/response/ApiResponse.java)
-- [src/main/java/returns/mingleday/response/success/SuccessResponse.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/response/success/SuccessResponse.java)
-- [src/main/java/returns/mingleday/response/exception/ExceptionResponse.java](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/java/returns/mingleday/response/exception/ExceptionResponse.java)
-- [src/main/resources/application.properties](https://github.com/jueunseuk/MingleDay-BE/blob/deploy/src/main/resources/application.properties)
-</details>
-
 # Architecture & Project Overview
 
 The MingleDay-BE project is a Spring Boot–based backend application that provides APIs for a scheduling and group (“mingle”) management service. The architecture is centered around a REST API layer secured by Spring Security, a consistent response and exception model, and a set of infrastructural configurations that support CORS, authentication, persistence, and time auditing.  
-Sources: [MingleDayApplication.java]() , [SecurityConfig.java]() , [WebConfig.java]() , [ApiResponse.java]() , [GlobalExceptionHandler.java]()  
 
 This page describes the overall architecture of the backend, focusing on the application entry point, build configuration, security setup, web configuration, global time base entity, and the unified API response and exception handling mechanism.
 
@@ -55,8 +36,6 @@ At a high level, the system is a layered Spring Boot application:
 - **Domain & persistence**: Entities typically extend a base time entity for auditing.
 - **API layer**: Controllers return a standard `ApiResponse`/`SuccessResponse` or `ExceptionResponse`.
 - **Global error handling**: Centralized via `GlobalExceptionHandler`.
-
-Sources: [MingleDayApplication.java]() , [SecurityConfig.java]() , [WebConfig.java]() , [BaseTime.java]() , [ApiResponse.java]() , [SuccessResponse.java]() , [ExceptionResponse.java]() , [GlobalExceptionHandler.java]()  
 
 ### Top-Level Component Relationship
 
@@ -78,8 +57,6 @@ graph TD
   Err["GlobalExceptionHandler"] --> RespErr["ExceptionResponse"]
 ```
 
-Sources: [MingleDayApplication.java]() , [SecurityConfig.java]() , [WebConfig.java]() , [BaseTime.java]() , [ApiResponse.java]() , [SuccessResponse.java]() , [ExceptionResponse.java]() , [GlobalExceptionHandler.java]()  
-
 ---
 
 ## Build & Module Structure
@@ -87,7 +64,6 @@ Sources: [MingleDayApplication.java]() , [SecurityConfig.java]() , [WebConfig.ja
 ### Gradle Configuration
 
 The project is a single-module Gradle build configured by `build.gradle` and `settings.gradle`. `settings.gradle` sets the root project name to `MingleDay-BE`.  
-Sources: [settings.gradle:1-2]()
 
 Key aspects from `build.gradle`:
 
@@ -99,8 +75,6 @@ Key aspects from `build.gradle`:
   - `spring-boot-starter-data-jpa`
   - Other Spring modules and utilities as needed (exact list in the file).
 - Configures test dependencies (e.g., `spring-boot-starter-test`).
-
-Sources: [build.gradle]()  
 
 #### Build-Level Overview
 
@@ -116,8 +90,6 @@ graph TD
   Bld["build.gradle"] --> DepJpa["spring-boot-starter-data-jpa"]
   Bld["build.gradle"] --> DepTest["test dependencies"]
 ```
-
-Sources: [build.gradle]() , [settings.gradle]()  
 
 ---
 
@@ -137,7 +109,6 @@ public class MingleDayApplication {
 ```
 
 This enables component scanning, auto-configuration, and bootstrap of the entire application.  
-Sources: [MingleDayApplication.java:1-12]()
 
 ```mermaid
 graph TD
@@ -146,8 +117,6 @@ graph TD
   Ctx["Spring ApplicationContext"] --> Beans["Configuration & Beans"]
 ```
 
-Sources: [MingleDayApplication.java:5-12]()
-
 ---
 
 ## Configuration Overview
@@ -155,7 +124,6 @@ Sources: [MingleDayApplication.java:5-12]()
 ### WebConfig
 
 `WebConfig` is a `@Configuration` class (likely implementing `WebMvcConfigurer`) that sets up web-related behaviors such as CORS, resource handling, interceptors, or message converters. The provided file is referenced as a key config component.  
-Sources: [WebConfig.java]()
 
 While exact methods are not enumerated here, the presence of this config indicates that:
 
@@ -169,8 +137,6 @@ graph TD
   MvcFeat["WebMvc custom config"] --> Ctrl["REST controllers"]
 ```
 
-Sources: [WebConfig.java]()  
-
 ### application.properties
 
 `application.properties` configures runtime behavior such as:
@@ -182,7 +148,6 @@ Sources: [WebConfig.java]()
 - Custom project properties (e.g., image base URLs).
 
 Every property directly shapes the runtime architecture by wiring Spring Boot auto-configurations.  
-Sources: [application.properties]()
 
 Example categories of properties configured (names are derived from common Spring properties present in the file):
 
@@ -193,8 +158,6 @@ Example categories of properties configured (names are derived from common Sprin
 | Logging               | `logging.level.*`                                     | Log level tuning                          |
 | Application-specific  | `app.*`                                               | Domain-specific configuration             |
 
-Sources: [application.properties]()  
-
 ---
 
 ## Security Architecture
@@ -202,7 +165,6 @@ Sources: [application.properties]()
 ### SecurityConfig
 
 `SecurityConfig` defines application-wide security settings using Spring Security. It is a `@Configuration` class that likely extends `WebSecurityConfigurerAdapter` (<= Spring Security 5) or defines a `SecurityFilterChain` bean (Spring Security 6 style).  
-Sources: [SecurityConfig.java]()
 
 From the file, the architecture aspects are:
 
@@ -220,8 +182,6 @@ graph TD
   AuthMgr["Authentication manager"] --> Users["User details service"]
 ```
 
-Sources: [SecurityConfig.java]()  
-
 #### Security Responsibilities Summary
 
 | Component            | Responsibility                                              |
@@ -229,8 +189,6 @@ Sources: [SecurityConfig.java]()
 | `SecurityConfig`     | Define filters and authorization rules across endpoints     |
 | Authentication setup | Configure how users are authenticated                      |
 | Password encoding    | Secure password storage and validation                     |
-
-Sources: [SecurityConfig.java]()  
 
 ---
 
@@ -254,8 +212,6 @@ public abstract class BaseTime {
 }
 ```
 
-Sources: [BaseTime.java:1-18]()
-
 This design centralizes creation and modification timestamps for all entities inheriting from `BaseTime`.
 
 ```mermaid
@@ -267,16 +223,12 @@ graph TD
   EntB["Domain entity B"] --> Base["BaseTime"]
 ```
 
-Sources: [BaseTime.java:5-18]()
-
 #### BaseTime Fields
 
 | Field       | Type              | Annotations                         | Description                              |
 |------------|-------------------|-------------------------------------|------------------------------------------|
 | `createdAt`| `LocalDateTime`   | `@CreatedDate`                      | Automatically set when entity is created |
 | `updatedAt`| `LocalDateTime`   | `@LastModifiedDate`                 | Updated on every entity modification     |
-
-Sources: [BaseTime.java:9-16]()  
 
 To make this effective, Spring Data JPA auditing must be enabled elsewhere in the project (e.g., via `@EnableJpaAuditing` in a configuration class; the exact location is outside the provided files).
 
@@ -285,7 +237,6 @@ To make this effective, Spring Data JPA auditing must be enabled elsewhere in th
 ## Unified API Response Model
 
 The project standardizes JSON responses via `ApiResponse`, `SuccessResponse`, and `ExceptionResponse`.  
-Sources: [ApiResponse.java]() , [SuccessResponse.java]() , [ExceptionResponse.java]()  
 
 ### ApiResponse
 
@@ -311,8 +262,6 @@ public class ApiResponse<T> {
 }
 ```
 
-Sources: [ApiResponse.java:1-26]()
-
 Key points:
 
 - **`success`**: Indicates if the request was handled successfully.
@@ -325,8 +274,6 @@ graph TD
   Api["ApiResponse<T>"] --> Data["data : T"]
   Api["ApiResponse<T>"] --> Err["error : ExceptionResponse"]
 ```
-
-Sources: [ApiResponse.java:5-17]()  
 
 ### SuccessResponse
 
@@ -346,8 +293,6 @@ public class SuccessResponse<T> {
 }
 ```
 
-Sources: [SuccessResponse.java:1-16]()
-
 This enforces a consistent shape for all “success” data bodies (e.g., `{ "data": ... }`).
 
 #### Success DTO Summary
@@ -355,8 +300,6 @@ This enforces a consistent shape for all “success” data bodies (e.g., `{ "da
 | Class             | Field | Type | Purpose                       |
 |-------------------|-------|------|-------------------------------|
 | `SuccessResponse` | data  | `T`  | The contained success payload |
-
-Sources: [SuccessResponse.java:5-13]()  
 
 ### ExceptionResponse
 
@@ -378,8 +321,6 @@ public class ExceptionResponse {
 }
 ```
 
-Sources: [ExceptionResponse.java:1-20]()
-
 Key fields:
 
 - `code`: Application-specific error code.
@@ -392,8 +333,6 @@ graph TD
   Ex["ExceptionResponse"] --> Msg["message : String"]
   Ex["ExceptionResponse"] --> Stat["status : int"]
 ```
-
-Sources: [ExceptionResponse.java:5-18]()  
 
 ### Response Flow
 
@@ -424,8 +363,6 @@ graph TD
   ExRes["ExceptionResponse"] --> ApiErr["ApiResponse.failure"]
 ```
 
-Sources: [ApiResponse.java:13-22]() , [SuccessResponse.java:9-15]() , [ExceptionResponse.java:12-19]() , [GlobalExceptionHandler.java]()  
-
 ---
 
 ## Global Exception Handling
@@ -433,7 +370,6 @@ Sources: [ApiResponse.java:13-22]() , [SuccessResponse.java:9-15]() , [Exception
 ### GlobalExceptionHandler
 
 `GlobalExceptionHandler` is a `@RestControllerAdvice` (or similar) component that centralizes exception-to-response mapping across the entire application.  
-Sources: [GlobalExceptionHandler.java]()
 
 Its responsibilities:
 
@@ -465,8 +401,6 @@ public class GlobalExceptionHandler {
 }
 ```
 
-Sources: [GlobalExceptionHandler.java]()
-
 #### Exception Handling Flow
 
 ```mermaid
@@ -485,15 +419,13 @@ sequenceDiagram
   H-->>R: ApiResponse.failure(error)
 ```
 
-Sources: [GlobalExceptionHandler.java]() , [ApiResponse.java:17-22]() , [ExceptionResponse.java:12-19]()  
-
 #### Error Payload Table
 
-| Field   | Description                                     | Source                              |
-|---------|-------------------------------------------------|-------------------------------------|
-| `code`  | Application-level error identifier             | [ExceptionResponse.java:7-12]()     |
-| `message` | Human-readable error description             | [ExceptionResponse.java:7-12]()     |
-| `status` | HTTP status code returned to the client       | [ExceptionResponse.java:7-12]()     |
+| Field     | Description                             |
+| --------- | --------------------------------------- |
+| `code`    | Application-level error identifier      |
+| `message` | Human-readable error description        |
+| `status`  | HTTP status code returned to the client |
 
 ---
 
@@ -521,8 +453,6 @@ graph TD
   ApiErr["ApiResponse.failure"] --> Cli
 ```
 
-Sources: [SecurityConfig.java]() , [ApiResponse.java:13-22]() , [SuccessResponse.java:9-15]() , [ExceptionResponse.java:12-19]() , [GlobalExceptionHandler.java]() , [BaseTime.java:5-18]()  
-
 ---
 
 ## Summary
@@ -537,4 +467,3 @@ The MingleDay-BE backend is structured as a conventional but robust Spring Boot 
 - Controllers return standardized responses using `ApiResponse`, `SuccessResponse`, and `ExceptionResponse`, while `GlobalExceptionHandler` ensures a uniform error model.
 
 This architecture yields a consistent, predictable API surface that separates concerns between security, web configuration, domain modeling, and response formatting.  
-Sources: [MingleDayApplication.java]() , [build.gradle]() , [settings.gradle]() , [SecurityConfig.java]() , [WebConfig.java]() , [BaseTime.java]() , [ApiResponse.java]() , [SuccessResponse.java]() , [ExceptionResponse.java]() , [GlobalExceptionHandler.java]() , [application.properties]()
