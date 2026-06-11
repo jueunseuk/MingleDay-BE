@@ -453,6 +453,11 @@ graph TD
   ApiOk["ApiResponse.success"] --> Cli
   ApiErr["ApiResponse.failure"] --> Cli
 ```
+---
+
+## ERD
+<img width="2701" height="1692" alt="ERD" src="https://github.com/user-attachments/assets/884db3bb-8c02-4c2c-aa47-e0bcd595eb7b" />
+
 
 ---
 
