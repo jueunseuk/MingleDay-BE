@@ -8,6 +8,8 @@ import returns.mingleday.domain.mingle.MingleMember;
 import returns.mingleday.domain.schedule.Schedule;
 import returns.mingleday.domain.schedule.ScheduleMember;
 import returns.mingleday.repository.ScheduleMemberRepository;
+import returns.mingleday.response.code.GlobalExceptionCode;
+import returns.mingleday.response.exception.BaseException;
 
 import java.util.List;
 
@@ -34,5 +36,10 @@ public class ScheduleMemberService {
     public void deleteAllBySchedule(Schedule schedule) {
         scheduleMemberRepository.deleteAllBySchedule(schedule);
         log.info("delete all schedule member - scheduleId: {}", schedule.getScheduleId());
+    }
+
+    public ScheduleMember findScheduleMemberById(Long mingleMemberId) {
+        return scheduleMemberRepository.findById(mingleMemberId)
+                .orElseThrow(() -> new BaseException(GlobalExceptionCode.RESOURCE_NOT_FOUND));
     }
 }

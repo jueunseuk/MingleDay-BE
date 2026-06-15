@@ -138,6 +138,8 @@ public class ScheduleSearchService {
     public List<SearchScheduleInstanceResponse> searchByKeyword(Integer userId, String keyword) {
         User user = userService.findUserByUserId(userId);
 
+        log.info("schedule search occurred - keyword: {}", keyword);
+
         if(keyword == null || keyword.isEmpty()) {
             throw new BaseException(SearchExceptionCode.TOO_SHORT_KEYWORD);
         }
@@ -172,7 +174,8 @@ public class ScheduleSearchService {
         LocalDateTime start = date.atStartOfDay();
         LocalDateTime end = date.plusDays(1).atStartOfDay();
 
-        List<ScheduleInstance> scheduleInstances = scheduleInstanceRepository.findAllByOneDay(user, start, end);
+        List<Mingle> mingles = mingleService.getMinglesByUser(userId);
+        List<ScheduleInstance> scheduleInstances = scheduleInstanceRepository.findAllByOneDay(user, mingles, start, end);
         return scheduleInstances.stream().map(si ->
                 new DailyScheduleResponse(
                         si.getSchedule(),
