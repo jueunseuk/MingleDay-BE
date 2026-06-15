@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                    log.info("[JWT-Filter] Success to Authentication - userId:{}, email:{}", userId, userDetails.getUsername());
+                    log.info("[JWT-Filter] Success to Authentication - userId:{}", userId);
                 }
             } catch (ExpiredJwtException e) {
                 log.warn("[JWT-Filter] Token Expired");
