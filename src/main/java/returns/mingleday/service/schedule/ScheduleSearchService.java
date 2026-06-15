@@ -138,6 +138,8 @@ public class ScheduleSearchService {
     public List<SearchScheduleInstanceResponse> searchByKeyword(Integer userId, String keyword) {
         User user = userService.findUserByUserId(userId);
 
+        log.info("schedule search occurred - keyword: {}", keyword);
+
         if(keyword == null || keyword.isEmpty()) {
             throw new BaseException(SearchExceptionCode.TOO_SHORT_KEYWORD);
         }
