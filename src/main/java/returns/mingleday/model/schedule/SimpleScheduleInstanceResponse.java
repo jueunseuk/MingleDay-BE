@@ -2,6 +2,7 @@ package returns.mingleday.model.schedule;
 
 import lombok.Data;
 import returns.mingleday.domain.schedule.ScheduleInstance;
+import returns.mingleday.domain.schedule.ScheduleStatus;
 
 import java.time.LocalDateTime;
 
@@ -11,6 +12,7 @@ public class SimpleScheduleInstanceResponse {
     private Long scheduleInstanceId;
     private LocalDateTime startAt;
     private LocalDateTime endAt;
+    private ScheduleStatus scheduleStatus;
 
     public SimpleScheduleInstanceResponse(ScheduleInstance scheduleInstance) {
         if (scheduleInstance == null) {
@@ -19,5 +21,6 @@ public class SimpleScheduleInstanceResponse {
         this.scheduleInstanceId = scheduleInstance.getScheduleInstanceId();
         this.startAt = scheduleInstance.getStartAt();
         this.endAt = scheduleInstance.getEndAt();
+        this.scheduleStatus = scheduleInstance.getScheduleStatus();
     }
 }
